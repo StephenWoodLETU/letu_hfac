@@ -14,6 +14,10 @@ class TunerControl:
 		a tuple with the first element being the com port on Windows or
 		file name on Linux and the second element is the baud rate."""
 		
+		# Save information about the device that was opened
+		self.info = device
+		
+		# Open device
 		try:
 			self.device = serial.Serial(*device)
 		except:
@@ -44,6 +48,7 @@ class TunerControl:
 		
 		self.device.write(STOP_MESSAGE)
 		self.device.flushOutput()
+		
 if __name__ == '__main__':
 	print("Testing TunerControl!")
 	f = raw_input("Enter the device descriptor: ")
