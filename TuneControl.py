@@ -31,7 +31,7 @@ class TunerControl:
 		"""Tell the tuner to start the tuning process."""
 		
 		self.device.write(START_MESSAGE)
-		self.device.flushOutput()
+		self.device.flush()
 
 	def waitForDone(self):
 		"""This waits for the tuner to send a specific character that
@@ -47,7 +47,7 @@ class TunerControl:
 		clear while it is tuning, the response is undefined."""
 		
 		self.device.write(STOP_MESSAGE)
-		self.device.flushOutput()
+		self.device.flush()
 		
 if __name__ == '__main__':
 	print("Testing TunerControl!")
