@@ -3,6 +3,47 @@
 import time
 import serial
 
+# Utilities for converting BCD to decimal and back
+def _BCD_To_Int(bcdStr):
+	"""Convert a binary coded decimal to an integer."""
+	val = 0
+	multiplier = 1
+	
+	for curChar in bcdStr[::-1]:
+		
+		# Decode first digit
+		curVal = ord(curChar) & 0x0F
+		val = val + multiplier * curVal
+		multiplier *= 10
+		
+		# Add second digit
+		curVal = ord(curChar) >> 4
+		val = val + multiplier * curVal
+		multiplier *= 10
+		
+	return val
+
+def _Int_To_BCD(num):
+	"""Convert an integer to a binary coded decimal to a string."""
+	val = int(num)
+	toRet = b""
+	
+	while(val > 0):
+		
+		# Encode first digit
+		curChar = (val % 10)
+		val = val / 10
+		
+		# See if we have another digit to encode
+		if(val > 0):
+			curChar = curChar | ((val % 10) << 4)
+			val = val / 10
+			
+		# Append
+		toRet = chr(curChar) + toRet
+		
+	return toRet
+
 class FrequencyControl:
 	
 	def __init__(self, device):
@@ -19,7 +60,7 @@ class FrequencyControl:
 	def __del__(self):
 		self.comlink.close()
 
-	def sendCommand(self, command, subcommand=b'', data=b''):
+	def _sendCommand(self, command, subcommand=b'', data=b''):
 		line=b""
 		
 		# Create the output message
@@ -34,7 +75,7 @@ class FrequencyControl:
 		self.comlink.write(line)
 		self.comlink.flush()
 		
-	def readResponse(self, responseDataLen):
+	def _readResponse(self, responseDataLen):
 		# Check for the OK back
 		#recvd = self.comlink.read(7)
 		pass
@@ -58,11 +99,11 @@ if __name__ == '__main__':
 	b = int(raw_input("Enter the baud rate: "))
 	cont = FrequencyControl((f, b))
 	
-	cont.sendCommand(chr(0x19),chr(0x00))
-	cont.sendCommand(chr(0x03))
-	cont.sendCommand(chr(0x03))
-	cont.sendCommand(chr(0x03))
-	#cont.sendCommand(chr(0x13),chr(0x00))
-	#cont.sendCommand(0x0E,0x02)
-	#cont.sendCommand(0x0E,0x00)
+	cont._sendCommand(chr(0x19),chr(0x00))
+	cont._sendCommand(chr(0x03))
+	cont._sendCommand(chr(0x03))
+	cont._sendCommand(chr(0x03))
+	#cont._sendCommand(chr(0x13),chr(0x00))
+	#cont._sendCommand(0x0E,0x02)
+	#cont._sendCommand(0x0E,0x00)
 
