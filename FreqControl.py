@@ -16,23 +16,32 @@ class FrequencyControl:
 			print "Could not open ",device
 			raise
 
-
 	def __del__(self):
 		self.comlink.close()
 
-	def sendBytes(self, command, subcommand, data=b''):
+	def sendCommand(self, command, subcommand=b'', data=b''):
 		line=b""
-		line=line + chr(0xFE)
-		line=line + chr(0xFE)
-		line=line + chr(0x76)
-		line=line + chr(command)
-		line=line + chr(subcommand)
-#		line=line + chr(data)
+		
+		# Create the output message
+		line=line + chr(0xFE) + chr(0xFE) + chr(0x76) + chr(0xE0)
+		
+		line=line + command
+		line=line + subcommand
+		line=line + data
+		
 		line=line + chr(0xFD)
+		
 		self.comlink.write(line)
 		self.comlink.flush()
+		
+	def readResponse(self, responseDataLen):
+		# Check for the OK back
+		#recvd = self.comlink.read(7)
+		pass
+		
 	def setFrequency(self, freq):
-		self.sendBytes(0x05,0x00,b"")
+		#self.sendCommand(0x05,0x00,b"")
+		pass
 
 	def setPower(self, power):
 		pass
@@ -44,13 +53,16 @@ class FrequencyControl:
 		pass
 
 if __name__ == '__main__':
-	print("Testing TunerControl!")
+	print("Testing FrequencyControl!")
 	f = raw_input("Enter the device descriptor: ")
 	b = int(raw_input("Enter the baud rate: "))
 	cont = FrequencyControl((f, b))
-	cont.sendBytes(0x13,0x00)
-	cont.sendBytes(0x0E,0x02)
-	time.sleep(7)
-	cont.sendBytes(0x0E,0x00)
-	del cont
+	
+	cont.sendCommand(chr(0x19),chr(0x00))
+	cont.sendCommand(chr(0x03))
+	cont.sendCommand(chr(0x03))
+	cont.sendCommand(chr(0x03))
+	#cont.sendCommand(chr(0x13),chr(0x00))
+	#cont.sendCommand(0x0E,0x02)
+	#cont.sendCommand(0x0E,0x00)
 
