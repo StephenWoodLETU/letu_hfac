@@ -3,6 +3,7 @@
 #  setup by sending "L C R;"
 #  reset by sending "<char>"
 
+import time
 import serial 
 
 class LoadControl:
@@ -31,3 +32,16 @@ class LoadControl:
 		# Format is <char>
 		self.comlink.write(b"#")
 		self.comlink.flush()
+
+if __name__ == '__main__':
+	print("Testing LoadControl!")
+	f = raw_input("Enter the device descriptor: ")
+	b = int(raw_input("Enter the baud rate: "))
+	load = LoadControl((f,b))
+	L = int(raw_input("Enter a load: "))
+	C = int(raw_input("Enter a capacatence: "))
+	R = int(raw_input("Enter a resistance: "))
+	load.setLCR(L,C,R)
+	time.sleep(5)
+	load.reset()
+
