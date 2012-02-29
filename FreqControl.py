@@ -9,7 +9,7 @@ def _BCD_To_Int(bcdStr):
 	val = 0
 	multiplier = 1
 	
-	for curChar in bcdStr[::-1]:
+	for curChar in bcdStr:
 		
 		# Decode first digit
 		curVal = ord(curChar) & 0x0F
@@ -23,7 +23,7 @@ def _BCD_To_Int(bcdStr):
 		
 	return val
 
-def _Int_To_BCD(num):
+def _Int_To_BCD(num,pad=0):
 	"""Convert an integer to a binary coded decimal to a string."""
 	val = int(num)
 	toRet = b""
@@ -40,7 +40,11 @@ def _Int_To_BCD(num):
 			val = val / 10
 			
 		# Append
-		toRet = chr(curChar) + toRet
+		toRet = toRet + chr(curChar)
+	
+	# Pad response to a certain number of bytes
+	for i in range(len(toRet),pad):
+		toRet = toRet + '\0'
 		
 	return toRet
 
@@ -53,6 +57,11 @@ class FrequencyControl:
 		try:
 			self.device = device
 			self.comlink = serial.Serial(*device)
+			
+			# Send get ID
+			self._sendCommand(chr(0x19),chr(0x00))
+			self._readResponse(2)
+			
 		except:
 			print "Could not open ",device
 			raise
@@ -75,22 +84,25 @@ class FrequencyControl:
 		self.comlink.write(line)
 		self.comlink.flush()
 		
+		# Test to clear out echoing
+		self.comlink.read(len(line))
+		
 	def _readResponse(self, responseDataLen):
-		# Check for the OK back
-		#recvd = self.comlink.read(7)
-		pass
+		recvd = self.comlink.read(4+responseDataLen+1)
+		return recvd[5:5+responseDataLen]
 		
 	def setFrequency(self, freq):
-		#self.sendCommand(0x05,0x00,b"")
-		pass
+		self._sendCommand(chr(0x05), data=_Int_To_BCD(freq,pad=5))
+		self._readResponse(1)
+		
+	def readFrequency(self):
+		self._sendCommand(chr(0x03))
+		return _BCD_To_Int(self._readResponse(6)[1:6])
 
 	def setPower(self, power):
 		pass
-
-	def start(self):
-		pass
-	
-	def stop(self):
+		
+	def getPower(self):
 		pass
 
 if __name__ == '__main__':
@@ -99,11 +111,6 @@ if __name__ == '__main__':
 	b = int(raw_input("Enter the baud rate: "))
 	cont = FrequencyControl((f, b))
 	
-	cont._sendCommand(chr(0x19),chr(0x00))
-	cont._sendCommand(chr(0x03))
-	cont._sendCommand(chr(0x03))
-	cont._sendCommand(chr(0x03))
-	#cont._sendCommand(chr(0x13),chr(0x00))
-	#cont._sendCommand(0x0E,0x02)
-	#cont._sendCommand(0x0E,0x00)
-
+	print cont.readFrequency()
+	cont.setFrequency(9300000)
+	print cont.readFrequency()
