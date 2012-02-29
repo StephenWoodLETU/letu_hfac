@@ -24,7 +24,8 @@ def _BCD_To_Int(bcdStr):
 	return val
 
 def _Int_To_BCD(num,pad=0):
-	"""Convert an integer to a binary coded decimal to a string."""
+	"""Convert an integer to a binary coded decimal to a string.  pad is the
+	minimum length to make the string that will be returned."""
 	val = int(num)
 	toRet = b""
 	
@@ -70,6 +71,9 @@ class FrequencyControl:
 		self.comlink.close()
 
 	def _sendCommand(self, command, subcommand=b'', data=b''):
+		"""Send a specific command to the device.  You must put the command,
+		subcommand, and data into binary strings exactly how you want them
+		sent."""
 		line=b""
 		
 		# Create the output message
@@ -84,18 +88,24 @@ class FrequencyControl:
 		self.comlink.write(line)
 		self.comlink.flush()
 		
-		# Test to clear out echoing
+		# Eat up the echoed command
 		self.comlink.read(len(line))
 		
 	def _readResponse(self, responseDataLen):
+		"""Read a certain number of bytes back from the frequency
+		device.  This value must include the length of the command,
+		subcommand, and data that you want to read, and the returned
+		string will be all of these concatenated to each other."""
 		recvd = self.comlink.read(4+responseDataLen+1)
 		return recvd[5:5+responseDataLen]
 		
 	def setFrequency(self, freq):
+		"Set the frequency, in hertz, of the device."
 		self._sendCommand(chr(0x05), data=_Int_To_BCD(freq,pad=5))
 		self._readResponse(1)
 		
 	def readFrequency(self):
+		"Read the frequency, in hertz, of the device."
 		self._sendCommand(chr(0x03))
 		return _BCD_To_Int(self._readResponse(6)[1:6])
 
