@@ -1,11 +1,16 @@
 # The VSWR Tune Test
 
-import TestCase
+from TestCase import TestCase
 import Config
 import Utils
 import csv
+from LoadControl import LoadControl
 
 class TuneTest(TestCase):
+    
+    def __init__(self):
+        TestCase.__init__(self, "VSWR Tune Test")
+        #self.loadSetter = LoadControl(Config.LOAD_DEVICE)
     
     def test(self):
         currentVSWR = 0
@@ -15,17 +20,17 @@ class TuneTest(TestCase):
         # Load frequencies to test
         try:
             inFile = file(Config.TABLE_D, "r")
-            tableD = csv.reader(inFile)
+            tableD = [line for line in csv.reader(inFile)][Config.D_HEADER_ROWS:]
             inFile.close()
         except:
             print("Could not load frequencies to test (%s)" % Config.TABLE_D)
             return False
         
         # Set current VSWR to first
-        currentVSWR = float(tableD[1][Config.D_VSWR_COL])
+        currentVSWR = float(tableD[0][Config.D_VSWR_COL])
         
         # Cycle through frequencies
-        for line in tableD[1:]:
+        for line in tableD:
             curTestResult = False
             calcVSWR = 0
             roe = 0
@@ -33,15 +38,19 @@ class TuneTest(TestCase):
             vswrFile = None
             
             # Set current VSWR to current test value, checking if different
-            if(currentVSWR != line[Config.D_VSWR_COL] and not self.prompt("Continue (Y/N)")):
+            if(currentVSWR != float(line[Config.D_VSWR_COL]) and not self.prompt("Continue?")):
                 return testResult
-            currentVSWR = line[Config.D_VSWR_COL]
+            currentVSWR = float(line[Config.D_VSWR_COL])
         
             # Set load
+            #self.loadSetter.setLCR(float(line[Config.D_L_COL]), float(line[Config.D_C_COL]), float(line[Config.D_R_COL]))
+            print("Setting load: L: %g C: %g R: %g" %
+                  (float(line[Config.D_L_COL]), float(line[Config.D_C_COL]), float(line[Config.D_R_COL])))
         
             # Prompt user to run the network analyzer and save to location
             while(vswrFile == None):
-                print("Please save the CSV network analyzer output to %s" % Config.NET_RES_FILE)
+                print("Please set the network analyzer to  %s Hz" % line[Config.D_FREQ_COL])
+                print("Please save the CSV data from the analyzer to %s" % Config.NET_RES_FILE)
                 self.wait()
                 try:
                     vswrFile = file(Config.NET_RES_FILE, "r")
@@ -49,7 +58,7 @@ class TuneTest(TestCase):
                     print("Could not open input file")
         
             # Load the contents of the file
-            roeValues = csv.reader(vswrFile)
+            roeValues = [newLine for newLine in csv.reader(vswrFile)][Config.NET_RES_HEADER_ROWS:]
             vswrFile.close()
         
             # Calculate average roe
@@ -65,9 +74,9 @@ class TuneTest(TestCase):
                 testResult = False
                 
             if(curTestResult):
-                print("Pass for frequency %s" % (tableD[Config.D_FREQ_COL]))
+                print("Pass for frequency %s" % (line[Config.D_FREQ_COL]))
             else:
-                print("Fail for frequency %s" % (tableD[Config.D_FREQ_COL]))
+                print("Fail for frequency %s" % (line[Config.D_FREQ_COL]))
             
         return testResult
     
