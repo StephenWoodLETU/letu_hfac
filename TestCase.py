@@ -9,7 +9,8 @@ class TestCase:
 
 	def runtests(self):
 		"Call this to actually run the test"
-		self.prompt("Would you like to run "+self.name+"?(Y/N)")
+		if not self.prompt("Would you like to run "+self.name+"?"):
+			return False
 		Started=time.time()
 		ret=self.test()
 		Finished=time.time()
@@ -22,7 +23,7 @@ class TestCase:
 
 	def prompt(self, text):
 		"Promts the user for a yes/no answer"
-		print text,
+		print text,"(Y/N):",
 		while True:
 			response=raw_input()
 			if response[0] == 'Y' or response[0] == 'y':
