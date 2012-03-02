@@ -2,17 +2,9 @@
 
 import sys
 import time
-import Config
-from LoadControl import LoadControl
-from FreqControl import FrequencyControl
-from TuneControl import TunerControl
-
 class TestCase:
 	def __init__(self, name):
 		self.name=name
-		self.Load=LoadControl(Config.LOAD_DEVICE)
-		self.Freq=FrequencyControl(Config.FREQ_DEVICE)
-		self.Tune=TunerControl(Config.TUNE_DEVICE)
 	def runtests(self):
 		print "Would you like to run "+self.name+"?(Y/N)",
 		respons=raw_input()
