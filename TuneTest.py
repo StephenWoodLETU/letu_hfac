@@ -10,7 +10,7 @@ class TuneTest(TestCase):
     
     def __init__(self):
         TestCase.__init__(self, "VSWR Tune Test")
-        #self.loadSetter = LoadControl(Config.LOAD_DEVICE)
+        self.loadSetter = LoadControl(Config.LOAD_DEVICE)
     
     def test(self):
         currentVSWR = 0
@@ -43,7 +43,7 @@ class TuneTest(TestCase):
             currentVSWR = float(line[Config.D_VSWR_COL])
         
             # Set load
-            #self.loadSetter.setLCR(float(line[Config.D_L_COL]), float(line[Config.D_C_COL]), float(line[Config.D_R_COL]))
+            self.loadSetter.setLCR(float(line[Config.D_L_COL]), float(line[Config.D_C_COL]), float(line[Config.D_R_COL]))
             print("Setting load: L: %g C: %g R: %g" %
                   (float(line[Config.D_L_COL]), float(line[Config.D_C_COL]), float(line[Config.D_R_COL])))
         
