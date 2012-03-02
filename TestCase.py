@@ -5,11 +5,9 @@ import time
 class TestCase:
 	def __init__(self, name):
 		self.name=name
+
 	def runtests(self):
-		print "Would you like to run "+self.name+"?(Y/N)",
-		respons=raw_input()
-		if respons[0] != 'Y' and respons[0] != 'y':
-			return False
+		self.prompt("Would you like to run "+self.name+"?(Y/N)")
 		Started=time.time()
 		ret=self.test()
 		Finished=time.time()
@@ -19,10 +17,20 @@ class TestCase:
 			print self.name,"FAILED"
 		print "test took",Finished-Started,"seconds"
 		return ret
+
+	def prompt(self, text):
+		print text,
+		while True:
+			response=raw_input()
+			if response[0] == 'Y' or response[0] == 'y':
+				return True
+			if response[0] == 'N' or response[0] == 'n':
+				return False
+			print "Please enter Y or N",
+			
 	def test(self):
 		print "Writing to screen"
 		return True
-
 if __name__ == '__main__':
 	test=TestCase("FakeTest")
 	test.runtests()
