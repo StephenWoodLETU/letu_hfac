@@ -27,10 +27,16 @@ class TestCase:
 			if response[0] == 'N' or response[0] == 'n':
 				return False
 			print "Please enter Y or N",
-			
+	def wait(self):
+		print "Push [enter] to continue",
+		raw_input()
+		
 	def test(self):
 		print "Writing to screen"
+		print "Waiting for user to finnish"
+		self.wait()
 		return True
+
 if __name__ == '__main__':
 	test=TestCase("FakeTest")
 	test.runtests()
