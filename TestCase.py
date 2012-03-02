@@ -26,11 +26,12 @@ class TestCase:
 		print text,"(Y/N):",
 		while True:
 			response=raw_input()
-			if response[0] == 'Y' or response[0] == 'y':
-				return True
-			if response[0] == 'N' or response[0] == 'n':
-				return False
-			print "Please enter Y or N",
+			if response:
+				if response[0] == 'Y' or response[0] == 'y':
+					return True
+				if response[0] == 'N' or response[0] == 'n':
+					return False
+			print "Please enter Y or N:",
 	def wait(self):
 		"Waits for the user to push [enter]"
 		print "Push [enter] to continue",
