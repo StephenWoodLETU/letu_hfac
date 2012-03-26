@@ -23,3 +23,9 @@ D_R_COL = 3
 NET_RES_FILE = "input/net.csv"
 NET_RES_ROE_COL = 0
 NET_RES_HEADER_ROWS = 6
+
+# Table F Settings - Loading frequencies to test for Power Test
+TABLE_F = "input/table_f.csv"
+F_HEADER_ROWS = 1
+F_ALL_POWERS_COL = 0
+F_ALL_FREQS_COL = 1
