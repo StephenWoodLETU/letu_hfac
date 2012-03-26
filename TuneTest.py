@@ -69,14 +69,12 @@ class TuneTest(TestCase):
             # Calculate VSWR and compare to predicted
             calcVSWR = Utils.Vswr(roe)
             
-            # Print pass fail
-            if(not curTestResult):
-                testResult = False
-                
+            # Print results and set overall test to false if failed
             if(curTestResult):
                 print("Pass for frequency %s" % (line[Config.D_FREQ_COL]))
             else:
                 print("Fail for frequency %s" % (line[Config.D_FREQ_COL]))
+                testResult = False
             
         return testResult
     
