@@ -3,6 +3,10 @@
 import time
 import serial
 
+# Local configuration variables
+DEFAULT_FREQUENCY = 1995000
+DEFAULT_POWER = 10
+
 # Utilities for converting BCD to decimal and back
 def _BCD_To_Int(bcdStr):
 	"""Convert a binary coded decimal to an integer."""
@@ -63,6 +67,21 @@ class FrequencyControl:
 			self._sendCommand(chr(0x19),chr(0x00))
 			self._readResponse(2)
 			
+			# Initialize to default settings
+			# LSB, Tx, RF power setting 20 of 255 - 1.995 MHz
+			
+			# Set LSB
+			self._sendCommand(chr(0x01), chr(0x00))
+			
+			# Set to Tx
+			self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
+			
+			# Set RF power setting to 20
+			self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(DEFAULT_POWER, 1))
+			
+			# Set to default frequency
+			self.setFrequency(DEFAULT_FREQUENCY)
+			
 		except:
 			print "Could not open ",device
 			raise
@@ -110,7 +129,9 @@ class FrequencyControl:
 		return _BCD_To_Int(self._readResponse(6)[1:6])
 
 	def setPower(self, power):
+		"Set the radio frequency power to a certain value between 2 and 100 Watts."
 		pass
+		
 		
 	def getPower(self):
 		pass
@@ -119,8 +140,11 @@ if __name__ == '__main__':
 	print("Testing FrequencyControl!")
 	f = raw_input("Enter the device descriptor: ")
 	b = int(raw_input("Enter the baud rate: "))
+	
+	print("Creating frequency controller")
 	cont = FrequencyControl((f, b))
 	
+	print("Reading and setting frequency")
 	print cont.readFrequency()
 	cont.setFrequency(9300000)
 	print cont.readFrequency()

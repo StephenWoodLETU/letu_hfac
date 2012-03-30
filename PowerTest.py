@@ -30,9 +30,6 @@ class PowerTest(TestCase):
         powers = [line[Config.F_ALL_POWERS_COL] for line in tableF if line[Config.F_ALL_POWERS_COL] != ""]
         frequencies = [line[Config.F_ALL_FREQS_COL] for line in tableF if line[Config.F_ALL_FREQS_COL] != ""]
         
-        # Set transciever to LSB, Tx, RF power setting 20 of 255 1.995 MHz
-        print("THIS PART HAS NOT BEEN IMPLEMENTED YET!!!!");
-        
         # Cycle through powers
         for power in powers:
             curPower = float(power)
