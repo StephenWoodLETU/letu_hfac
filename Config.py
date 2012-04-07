@@ -12,6 +12,7 @@ FREQ_DEVICE = ("com1", 19200)
 
 # Table D settings - this is where we load frequencies to test
 TABLE_D = "input/table_d.csv"
+TuneTestoutput = "TuneTestOutput.csv"
 D_HEADER_ROWS = 1
 D_VSWR_COL = 0
 D_FREQ_COL = 1

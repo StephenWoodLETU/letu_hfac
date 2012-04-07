@@ -5,12 +5,14 @@ import Config
 import Utils
 import csv
 from LoadControl import LoadControl
+from FreqControl import FrequencyControl
 
 class TuneTest(TestCase):
     
     def __init__(self):
         TestCase.__init__(self, "VSWR Tune Test")
         self.loadSetter = LoadControl(Config.LOAD_DEVICE)
+        self.freq = FrequencyControl(Config.FREQ_DEVICE)
     
     def test(self):
         currentVSWR = 0
@@ -25,7 +27,11 @@ class TuneTest(TestCase):
         except:
             print("Could not load frequencies to test (%s)" % Config.TABLE_D)
             return False
-        
+            
+        #open output
+        results = csv.writer(file(Config.TuneTestoutput,"wb"))
+	results.writerow(["Frequency","Load (L, C, R)","VSWR","Status"])
+		
         # Set current VSWR to first
         currentVSWR = float(tableD[0][Config.D_VSWR_COL])
         
@@ -42,6 +48,8 @@ class TuneTest(TestCase):
                 return testResult
             currentVSWR = float(line[Config.D_VSWR_COL])
         
+            #set freq?
+            self.freq.setFrequency(float(line[Config.D_FREQ_COL]))
             # Set load
             self.loadSetter.setLCR(float(line[Config.D_L_COL]), float(line[Config.D_C_COL]), float(line[Config.D_R_COL]))
             print("Setting load: L: %g C: %g R: %g" %
@@ -72,9 +80,16 @@ class TuneTest(TestCase):
             # Print results and set overall test to false if failed
             if(curTestResult):
                 print("Pass for frequency %s" % (line[Config.D_FREQ_COL]))
+                results.writerow([float(line[Config.D_FREQ_COL]),
+                (line[Config.D_L_COL],line[Config.D_C_COL],line[Config.D_R_COL]),
+                calcVSWR,"Pass"]) 
             else:
                 print("Fail for frequency %s" % (line[Config.D_FREQ_COL]))
+                results.writerow([float(line[Config.D_FREQ_COL]),
+                (line[Config.D_L_COL],line[Config.D_C_COL],line[Config.D_R_COL]),
+                calcVSWR,"Fail"])
                 testResult = False
+            
             
         return testResult
     
