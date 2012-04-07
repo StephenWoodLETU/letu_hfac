@@ -9,6 +9,8 @@ from LoadControl import LoadControl
 from TuneControl import TunerControl
 from FreqControl import FrequencyControl
 
+M2Hz = 1000000
+
 class PowTest(TestCase):
         def __init__(self):
             TestCase.__init__(self, "Tune Power Test")
@@ -19,21 +21,26 @@ class PowTest(TestCase):
         def test(self):
         	"Test the transceiver at various frequency-load-power combinations"
 		results = csv.writer(file(Config.PowerTestoutput,"wb"))
-		frequencys=range(2,30) #in MHz for the moment
-        	powerlevels=range(1,20)
-		for frequency in frequencys:
-			print("Setting to %g MHz" % frequency)
-			self.tran.setFrequency(frequency*1000000)
-			for powerlevel in powerlevels:
-				if not self.prompt("Procede at power level %s?" % powerlevel):
-					break
-				print("Setting power: %g" % powerlevel)
-				self.tran.setPower(powerlevel)
-				for row in loadTable:
+		results.writerow(["Powerlevel","Frequency","Time","Status"])
+		#load input data
+		infile = file(Config.TABLE_J, "r")
+	        tableJ = [line for line in csv.reader(infile)][Config.J_HEADER_ROWS:]
+	        infile.close()
+	        powerlevels = range(2,23,3)
+	        for powerlevel in powerlevels:
+	        	for row in tableJ:
+				frequency = float(row[Config.J_FREQ_COL])
+				print("Setting to %g MHz" % frequency)
+				self.tran.setFrequency(frequency*M2Hz)
+				for offset in range(0,Config.J_LOADS_PER_VSR*Config.J_VSRS,3):
 					# Set load
-					self.load.setLCR(float(row[Config.D_L_COL]), float(row[Config.D_C_COL]), float(row[Config.D_R_COL]))
+					self.load.setLCR(float(row[Config.J_L_COL+offset]),
+					 float(row[Config.J_C_COL+offset]),
+					 float(row[Config.J_R_COL+offset]))
 					print("Setting load: L: %g C: %g R: %g" %
-					(float(row[Config.D_L_COL]), float(row[Config.D_C_COL]), float(row[Config.D_R_COL])))
+					(float(row[Config.J_L_COL+offset]),
+					 float(row[Config.J_C_COL+offset]),
+					 float(row[Config.J_R_COL+offset])))
 				#test for correct tuning
 				Started=time.time()
 				self.tune.start()
@@ -41,11 +48,15 @@ class PowTest(TestCase):
 				Finished=time.time()
 				#record results
 				if self.tune.getFrequency() == self.freq.readFrequency():
-					result= [frequency,Finished-Started,"Pass"]
+					result= [powerlevel,frequency,Finished-Started,"Pass"]
 				else:
-					result= [frequency,Finished-Started,"Fail"]
+					result= [powerlevel,frequency,Finished-Started,"Fail"]
 				print result
 				results.writerow(result)
+			if not self.prompt("Procede at power level %s?" % powerlevel):
+						break
+			print("Setting power: %g" % powerlevel)
+			self.tran.setPower(powerlevel)
 		#set power back down
 		self.tran.setPower(1)			
 
