@@ -57,21 +57,25 @@ class TuneTest(TestCase):
         
             # Prompt user to run the network analyzer and save to location
             while(vswrFile == None):
-                print("Please set the network analyzer to  %s Hz" % line[Config.D_FREQ_COL])
-                print("Please save the CSV data from the analyzer to %s" % Config.NET_RES_FILE)
-                self.wait()
-                try:
-                    vswrFile = file(Config.NET_RES_FILE, "r")
-                except:
-                    print("Could not open input file")
-        
-            # Load the contents of the file
+		    print("Please set the network analyzer to  %s Hz" % line[Config.D_FREQ_COL])
+		    print("Please save the CSV data from the analyzer to %s" % Config.NET_RES_FILE)
+		    self.wait()
+		    try:
+			vswrFile = file(Config.NET_RES_FILE, "r")
+		    except:
+			print("Could not open input file") 
+
+	    # Load the contents of the file
             roeValues = [newLine for newLine in csv.reader(vswrFile)][Config.NET_RES_HEADER_ROWS:]
-            vswrFile.close()
-        
-            # Calculate average roe
+	    vswrFile.close()
+
+	    # Calculate average roe 
+	    roeValues.pop()
             for roeLine in roeValues:
-                roe += complex(str(roeLine[Config.NET_RES_ROE_COL]).replace("i", "j"))
+		try:
+			roe += Utils.tooComplex(roeLine[Config.NET_RES_ROE_COL])
+		except IndexError:
+			print "Wiered input:",roeLine
             roe /= len(roeValues)
             
             # Calculate VSWR and compare to predicted
