@@ -30,7 +30,7 @@ class TuneTest(TestCase):
             
         #open output
         results = csv.writer(file(Config.TuneTestoutput,"wb"))
-	results.writerow(["Frequency","Load (L, C, R)","VSWR","Status"])
+	results.writerow(["Frequency","Load (L, C, R)","VSWR","Status","Visual"])
 		
         # Set current VSWR to first
         currentVSWR = float(tableD[0][Config.D_VSWR_COL])
@@ -64,10 +64,12 @@ class TuneTest(TestCase):
 			vswrFile = file(Config.NET_RES_FILE, "r")
 		    except:
 			print("Could not open input file") 
-
+	    print "Does the graph look correct? :",
+	    notes = raw_input()
+	    
 	    # Load the contents of the file
             roeValues = [newLine for newLine in csv.reader(vswrFile)][Config.NET_RES_HEADER_ROWS:]
-	    vswrFile.close()
+            vswrFile.close()
 
 	    # Calculate average roe 
 	    roeValues.pop()
@@ -86,12 +88,13 @@ class TuneTest(TestCase):
                 print("Pass for frequency %s" % (line[Config.D_FREQ_COL]))
                 results.writerow([float(line[Config.D_FREQ_COL]),
                 (line[Config.D_L_COL],line[Config.D_C_COL],line[Config.D_R_COL]),
-                calcVSWR,"Pass"]) 
+                calcVSWR,"Pass",notes]) 
+                testResult = True
             else:
                 print("Fail for frequency %s" % (line[Config.D_FREQ_COL]))
                 results.writerow([float(line[Config.D_FREQ_COL]),
                 (line[Config.D_L_COL],line[Config.D_C_COL],line[Config.D_R_COL]),
-                calcVSWR,"Fail"])
+                calcVSWR,"Fail",notes])
                 testResult = False
             
             
