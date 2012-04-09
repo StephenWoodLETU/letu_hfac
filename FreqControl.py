@@ -70,8 +70,8 @@ class FrequencyControl:
 			# Initialize to default settings
 			# LSB, Tx, RF power setting 20 of 255 - 1.995 MHz
 			
-			# Set LSB
-			self._sendCommand(chr(0x01), chr(0x00))
+			# Set RTTY
+			self._sendCommand(chr(0x01), chr(0x04))
 			
 			# Set to Tx
 			self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
@@ -87,6 +87,8 @@ class FrequencyControl:
 			raise
 
 	def __del__(self):
+		#set back to Rx?
+		self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
 		self.comlink.close()
 
 	def _sendCommand(self, command, subcommand=b'', data=b''):
@@ -132,9 +134,18 @@ class FrequencyControl:
 		"Set the radio frequency power to a certain value between 2 and 100 Watts."
 		pass
 		
-		
 	def getPower(self):
 		pass
+	
+	def startTune(self):
+		"Signals for the other device to tune"
+		#set Rx
+		self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
+		#sent tune
+		self._sendCommand(chr(0x1C), chr(0x01), chr(0x02))
+		time.sleep(.3)
+		#set Tx
+		self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
 
 if __name__ == '__main__':
 	print("Testing FrequencyControl!")
@@ -146,5 +157,8 @@ if __name__ == '__main__':
 	
 	print("Reading and setting frequency")
 	print cont.readFrequency()
-	cont.setFrequency(9300000)
+	cont.setFrequency(7000000)
 	print cont.readFrequency()
+	print("Signaling for a tune")
+	cont.startTune()
+	
