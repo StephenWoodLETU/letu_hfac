@@ -47,7 +47,7 @@ class PowerTest(TestCase):
                 
                 # Prompt user for if everything is OK 
                 if(not self.prompt("Is the equipment cool enough?")):
-                    self.freqS.setPower(0);
+                    self.freqSetter.setPower(0);
                     return False
                     
                 # Prompt for if the test is good

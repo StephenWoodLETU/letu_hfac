@@ -87,6 +87,8 @@ class FrequencyControl:
 			raise
 
 	def __del__(self):
+		#set back down to normal?
+		self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(2, 1))
 		#set back to Rx?
 		self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
 		self.comlink.close()
@@ -132,7 +134,10 @@ class FrequencyControl:
 
 	def setPower(self, power):
 		"Set the radio frequency power to a certain value between 2 and 100 Watts."
-		pass
+		#val / 100 = hx / 0xff
+		val = int((power/98)*0xff)
+		self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(val, 1))
+		#self._sendCommand(chr(0x14), chr(0x0A), chr(val))
 		
 	def getPower(self):
 		pass
@@ -143,7 +148,7 @@ class FrequencyControl:
 		self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
 		#sent tune
 		self._sendCommand(chr(0x1C), chr(0x01), chr(0x02))
-		time.sleep(.3)
+		time.sleep(.2)
 		#set Tx
 		self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
 
@@ -161,4 +166,7 @@ if __name__ == '__main__':
 	print cont.readFrequency()
 	print("Signaling for a tune")
 	cont.startTune()
+	#cont._sendCommand(chr(0x14), chr(0x0A), chr(0x80))
+	cont.setPower(20)
+	raw_input("ready?")
 	
