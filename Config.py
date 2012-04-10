@@ -32,7 +32,8 @@ F_ALL_POWERS_COL = 0
 F_ALL_FREQS_COL = 1
 
 #PowerTest data
-PowerTestoutput = "TunePowerTestOutput.csv"
+TunePowerTestoutput = "TunePowerTestOutput.csv"
+PowerTestoutput = "PowerTestOutput.csv"
 TABLE_J = "input/table_j.csv"
 J_HEADER_ROWS = 3
 J_FREQ_COL = 0

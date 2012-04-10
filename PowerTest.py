@@ -16,7 +16,11 @@ class PowerTest(TestCase):
         testResult = True
         powers = None;
         frequencies = None;
-        
+
+	#open output        
+	results = csv.writer(file(Config.PowerTestoutput,"wb"))
+	results.writerow(["Powerlevel","Frequency","Heat","Correctness"])
+
         # Load frequencies to test
         try:
             inFile = file(Config.TABLE_F, "r")
@@ -45,14 +49,17 @@ class PowerTest(TestCase):
                 # Set frequency
                 self.freqSetter.setFrequency(curFreq)
                 
-                # Prompt user for if everything is OK 
+                # Ask user if everything is OK
                 if(not self.prompt("Is the equipment cool enough?")):
-                    self.freqSetter.setPower(0);
-                    return False
+			self.freqSetter.setPower(0)
+			results.writerow([curPower,curFreq,"Overheated!","Failed"])
+			return False
                     
                 # Prompt for if the test is good
                 curTestResult = self.prompt("Is the output correct?")
                 
+		#save what just happend
+		results.writerow([curPower,curFreq,"Pass",curTestResult])
                 # Print results and set overall test to false if failed
                 if(curTestResult):
                     print("PASS for power %f W frequency %s MHz\n" % (curPower, curFreq / 1000000))

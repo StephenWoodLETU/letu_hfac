@@ -20,7 +20,7 @@ class PowTest(TestCase):
             
         def test(self):
         	"Test the transceiver at various frequency-load-power combinations"
-		results = csv.writer(file(Config.PowerTestoutput,"wb"))
+		results = csv.writer(file(Config.TunePowerTestoutput,"wb"))
 		results.writerow(["Powerlevel","Frequency","Time","Status"])
 		#load input data
 		infile = file(Config.TABLE_J, "r")
