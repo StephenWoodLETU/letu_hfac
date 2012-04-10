@@ -16,8 +16,8 @@ TuneTestoutput = "TuneTestOutput.csv"
 D_HEADER_ROWS = 1
 D_VSWR_COL = 0
 D_FREQ_COL = 1
-D_L_COL = 4
-D_C_COL = 5
+D_L_COL = 5
+D_C_COL = 4
 D_R_COL = 3
 
 # Network analyzer data
