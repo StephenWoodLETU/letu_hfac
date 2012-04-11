@@ -76,7 +76,7 @@ class TuneTest(TestCase):
 			    # Load the contents of the file
 			    roeValues = [newLine for newLine in csv.reader(vswrFile)][Config.NET_RES_HEADER_ROWS:]
 			    vswrFile.close()
-
+                            vswrFile = None
 			    # Calculate average roe 
 			    roeValues.pop()
 			    for roeLine in roeValues:
@@ -102,7 +102,7 @@ class TuneTest(TestCase):
 				(line[Config.J_L_COL],line[Config.J_C_COL],line[Config.J_R_COL]),
 				calcVSWR,"Fail",notes])
 				testResult = False    
-            	if(not self.prompt("Continue?")):
+                    if(not self.prompt("Continue?")):
 		        return testResult
         return testResult
     
