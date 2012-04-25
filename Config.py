@@ -14,6 +14,7 @@ FREQ_DEVICE = ("com3", 19200)
 TuneTestoutput = "TuneTestOutput.csv"
 TunePowerTestoutput = "TunePowerTestOutput.csv"
 PowerTestoutput = "PowerTestOutput.csv"
+TuneTimeTestoutput = "TuneTimeTestOutput.csv"
 
 # Network analyzer data
 NET_RES_FILE = "input/net.csv"
