@@ -138,7 +138,13 @@ class FrequencyControl:
                val = int((power/98)*0xff)
                self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(val, 1))
                #self._sendCommand(chr(0x14), chr(0x0A), chr(val))
-               
+
+        def setTx(self):
+            self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
+            
+        def setRx(self):
+            self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
+            
         def getPower(self):
                pass
         
@@ -169,4 +175,4 @@ if __name__ == '__main__':
         #cont._sendCommand(chr(0x14), chr(0x0A), chr(0x80))
         cont.setPower(20)
         raw_input("ready?")
-        
+
