@@ -6,7 +6,7 @@ import os
 DEFAULT_POWER = .2
 
 # Com port/baud rate pairs for the input/output devices
-LOAD_DEVICE = ("com7", 57600)
+LOAD_DEVICE = ("com7", 19200)
 TUNE_DEVICE = ("com3", 19200)
 FREQ_DEVICE = ("com3", 19200)
 
@@ -33,7 +33,7 @@ J_HEADER_ROWS = 3
 J_FREQ_COL = 0
 J_LOADS_PER_VSR = 6
 J_VSRS = 5
-J_R_COL = 3
-J_L_COL = 4
-J_C_COL = 5
+J_R_COL = 2
+J_L_COL = 3
+J_C_COL = 4
 
