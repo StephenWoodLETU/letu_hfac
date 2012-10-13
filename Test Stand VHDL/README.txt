@@ -1,0 +1,1 @@
+This folder contains the VHDL for the CPLD that controls the RLC switching on the test stand.
