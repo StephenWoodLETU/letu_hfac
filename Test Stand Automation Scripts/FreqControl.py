@@ -86,11 +86,15 @@ class FrequencyControl:
                      print "Could not open ",device
                      raise
 
-        def __del__(self):
-               #set back down to normal?
+        # def __del__(self):
+        
+        def resetTuner(self):		
+			   #set back down to normal?
                self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(2, 1))
                #set back to Rx?
                self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
+			   #set to default frequency
+               self.setFrequency(DEFAULT_FREQUENCY)
                self.comlink.close()
 
         def _sendCommand(self, command, subcommand=b'', data=b''):
@@ -158,21 +162,26 @@ class FrequencyControl:
                #set Tx
                self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
 
+# Main method to test the Frequency Controller.
 if __name__ == '__main__':
         print("Testing FrequencyControl!")
-        f = raw_input("Enter the device descriptor: ")
-        b = int(raw_input("Enter the baud rate: "))
+        f = raw_input("Enter the device descriptor [com3]: ")
+        b = int(raw_input("Enter the baud rate [19200]: "))
         
         print("Creating frequency controller")
         cont = FrequencyControl((f, b))
         
-        print("Reading and setting frequency")
-        print cont.readFrequency()
+        print("Reading then setting frequency.")
+        print 'Read the frequency: {}'.format(cont.readFrequency())
+        print 'Now setting the frequency to 7 MHz'
         cont.setFrequency(7000000)
-        print cont.readFrequency()
+        print 'Read the new frequency: {}'.format(cont.readFrequency())
         print("Signaling for a tune")
         cont.startTune()
         #cont._sendCommand(chr(0x14), chr(0x0A), chr(0x80))
+        print("Finished the tune")
         cont.setPower(20)
-        raw_input("ready?")
+        print("Set the power")
+        raw_input("All done. Ready to reset?")
+        cont.resetTuner()
 
