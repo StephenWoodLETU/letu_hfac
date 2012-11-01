@@ -1,0 +1,1 @@
+This folder contains the Arduino code that controls the RLC switching on the test stand.
