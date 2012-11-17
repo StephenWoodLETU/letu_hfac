@@ -1,0 +1,20 @@
+Commands to send the Arduino are:
+SETR
+SETL
+SETC
+
+These commands should be followed immediatly by an integer value to set the element to. For instance:
+SETR500 - informs the Arduino that the resistance should be set to 500 Ohms.
+Some decimal values are actually set. In these cases, truncate the decimal value. For instance, to set the 31.25 mH inductor send the command: SETL31.
+
+Below are the ranges for each element:
+
+R: 2 (actual 2.5) Ohms - 1000 Ohms
+L: 31 (actual 21.25) mH to 8000 mH
+C: 15 uF to 18800 uF
+
+
+The Arduino will return the a 0 if the element was set exactly as sent. Otherwise the Arduino will match the value as close as it can on the low side and send back the remaining value not set. For instance:
+SETL195 	- Sent to the Arduino
+		- Arduino sets the 62.5 mH and 125mH inductor
+7		- Value returned = 195-62-125=7 (62.5 mH => 62 mH)

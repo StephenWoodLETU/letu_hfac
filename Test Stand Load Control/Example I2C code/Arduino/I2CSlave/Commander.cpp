@@ -50,11 +50,17 @@ void Commander::addCommand(Command_t command)
 // process command method:
 void Commander::processCommand(String command)
 {
+  char cmd[4];
+  int value;
+  
+  strncpy(cmd, command);
+  
   for (int i = 0; i < MAX_COMMANDS; i++) 
   {
     if (this->commands[i].isActive)
     { 
-      if (this->commands[i].execCommand == command)
+	  
+      if (strncmp(this->commands[i].execCommand, command, 4))
       {
         // call callback-function
         this->commands[i].callback(command);
