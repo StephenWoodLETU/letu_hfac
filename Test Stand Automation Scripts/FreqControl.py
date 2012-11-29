@@ -139,9 +139,10 @@ class FrequencyControl:
         def setPower(self, power):
                "Set the radio frequency power to a certain value between 2 and 100 Watts."
                #val / 100 = hx / 0xff
-               val = int((power/98)*0xff)
+               #val = int((power/98)*0xff)
+               #self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(val, 1))
+               val = int(255*power/100)
                self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(val, 1))
-               #self._sendCommand(chr(0x14), chr(0x0A), chr(val))
 
         def setTx(self):
             self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
