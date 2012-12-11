@@ -3,7 +3,8 @@ SETR
 SETL
 SETC
 
-These commands should be followed immediatly by an integer value to set the element to. For instance:
+These commands should be followed immediately by an integer value to set the element to
+and a terminating null character. For instance:
 SETR500 - informs the Arduino that the resistance should be set to 500 Ohms.
 Some decimal values are actually set. In these cases, truncate the decimal value. For instance, to set the 31.25 mH inductor send the command: SETL31.
 
