@@ -2,30 +2,29 @@
 
 import os
 
+# Set to true if this test will be attended
+ATTENDED_TEST = True
+
+# Set to true if using a competitor's coupler
+# If true, the Arduino coupler interface will not be used
+COMPETITOR_TUNER = True
+
 # Used only for the tests not directly testing power
 DEFAULT_POWER = .2
 
 # Com port/baud rate pairs for the input/output devices
+#! Change these for RasPi
 LOAD_DEVICE = ("com7", 19200)
-TUNE_DEVICE = ("com3", 19200)
+ICOM_DEVICE = ("com3", 19200)
 FREQ_DEVICE = ("com3", 19200)
 
 #output files
-TuneTestoutput = "TuneTestOutput.csv"
-TunePowerTestoutput = "TunePowerTestOutput.csv"
-PowerTestoutput = "PowerTestOutput.csv"
-TuneTimeTestoutput = "TuneTimeTestOutput.csv"
+TestOutputFile = "TestResults.csv"
 
-# Network analyzer data
-NET_RES_FILE = "input/net.csv"
-NET_RES_ROE_COL = 1
-NET_RES_HEADER_ROWS = 6
-
-# Table F Settings - Loading frequencies to test for Power Test
-TABLE_F = "input/table_f.csv"
-F_HEADER_ROWS = 1
-F_ALL_POWERS_COL = 0
-F_ALL_FREQS_COL = 1
+# Input files settings
+VAR_LOAD_COMBOS = "input/loadCombinations.csv"
+VLC_HEADER_ROWS = 1
+POWER_AND_FREQ = "input/frequenciesAndPowers.csv"
 
 #PowerTest data
 TABLE_J = "input/table_j.csv"

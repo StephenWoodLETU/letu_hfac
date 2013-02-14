@@ -1,0 +1,46 @@
+read in values to tune (r, l, c)
+read in frequencies to test (f)
+read in powers to test (p)
+
+for each RLC set
+    tell arduino to set RLC on load
+    
+    for each frequency
+        tell icom to set frequency
+        
+        for each power
+            tell icom to set power
+            
+            tell the coupler to tune (signal the arduino if using HFAC, else signal icom)
+            if using HFAC, wait for done signal
+            else read VSWR from PM continuously until falls into proper range
+            check time; set timeTestResult = pass or fail
+            check VSWR; set vswrTestResult = pass or fail
+            write to file: r,l,c,frequency,power,timeTestResult,timeToTune,vswrTestResult,measuredVswr
+            
+            
+            
+Needed input files:
+
+loadCombinations.csv
+r1,l1,c1
+r2,l2,c2
+r2,l2,c2
+
+testFrequenciesAndPowers.csv
+p1,p2,p3,p4
+f1,f2
+
+Output file format (testResults.csv):
+r1,l1,c1, f1  , p1  ,timeTestResult1,timeToTune1,vswrTestResult1,measuredVswr1
+r1,l1,c1, f1  , p2  ,timeTestResult2,timeToTune2,vswrTestResult2,measuredVswr2
+r1,l1,c1, f1  , ... ,timeTestResult3,timeToTune3,vswrTestResult3,measuredVswr3
+r1,l1,c1, f2  , p1  ,timeTestResult4,timeToTune4,vswrTestResult4,measuredVswr4
+r1,l1,c1, ... , ... ,timeTestResult5,timeToTune5,vswrTestResult5,measuredVswr5
+r2,l2,c2, f1  , p1  ,timeTestResult6,timeToTune6,vswrTestResult6,measuredVswr6
+. . .   , ... , ... ,timeTestResultN,timeToTuneN,vswrTestResultN,measuredVswrN
+
+
+
+
+Total number of tests = #of loads * #of frequencies * #of powers 
