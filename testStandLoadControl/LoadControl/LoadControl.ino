@@ -12,37 +12,40 @@
 #include "Wire.h"
 
 // Pin Assignments:
-int const Res2_5  = 22;
-int const Res5    = 23; 
-int const Res12   = 24; 
-int const Res25   = 25;
-int const Res50   = 26;
-int const Res100  = 41;
-int const Res250  = 40;
-int const Res500  = 39;
-int const Res1000 = 38;
+int const Res2_5  = 49;
+int const Res5    = 50; 
+int const Res12   = 51; 
+int const Res25   = 52;
+int const Res50   = 53;
+int const Res100  = 5;
+int const Res250  = 36;
+int const Res500  = 35;
+int const Res1000 = 34;
 
-int const Cap15    = 28;
-int const Cap33    = 29;
-int const Cap68    = 30;
-int const Cap120   = 31;
-int const Cap330   = 32;
-int const Cap680   = 47;
-int const Cap1000  = 46;
-int const Cap2200  = 45;
-int const Cap4700  = 44;
-int const Cap9400  = 43;
-int const Cap18800 = 42;
+int const CapShort = 22;
+int const Cap8_2   = 23;
+int const Cap16    = 24;
+int const Cap33    = 25;
+int const Cap62    = 26;
+int const Cap127   = 27;
+int const Cap256   = 28;
+int const Cap510   = 43;
+int const Cap1020  = 42;
+int const Cap2040  = 41;
+int const Cap4100  = 40;
+int const Cap8200  = 39;
+int const Cap16400 = 38;
 
-int const Ind31_25m = 33;
-int const Ind62_5m  = 34;
-int const Ind125m   = 35;
-int const Ind250m   = 36;
-int const Ind500m   = 37;
-int const Ind1      = 52;
-int const Ind2      = 51;
-int const Ind4      = 50;
-int const Ind8      = 49;
+int const Ind31_25m = 29;
+int const Ind62_5m  = 30;
+int const Ind125m   = 31;
+int const Ind250m   = 32;
+int const Ind500m   = 33;
+int const Ind1      = 48;
+int const Ind2      = 47;
+int const Ind4      = 46;
+int const Ind8      = 45;
+int const Ind16     = 44;
 
 // Define I2C Commands
 #define SET_RES_COMMAND  "SETR"
@@ -67,17 +70,19 @@ void setup() {
   pinMode(Res250, OUTPUT);
   pinMode(Res500, OUTPUT);
   pinMode(Res1000, OUTPUT);
-  pinMode(Cap15, OUTPUT);
+  pinMode(CapShort, OUTPUT);
+  pinMode(Cap8_2, OUTPUT);
+  pinMode(Cap16, OUTPUT);
   pinMode(Cap33, OUTPUT);
-  pinMode(Cap68, OUTPUT);
-  pinMode(Cap120, OUTPUT);
-  pinMode(Cap330, OUTPUT);
-  pinMode(Cap680, OUTPUT);
-  pinMode(Cap1000, OUTPUT);
-  pinMode(Cap2200, OUTPUT);
-  pinMode(Cap4700, OUTPUT);
-  pinMode(Cap9400, OUTPUT);
-  pinMode(Cap18800, OUTPUT);
+  pinMode(Cap6215, OUTPUT);
+  pinMode(Cap12762, OUTPUT);
+  pinMode(Cap256, OUTPUT);
+  pinMode(Cap510, OUTPUT);
+  pinMode(Cap1020, OUTPUT);
+  pinMode(Cap2040, OUTPUT);
+  pinMode(Cap4100, OUTPUT);
+  pinMode(Cap8200, OUTPUT);
+  pinMode(Cap16400, OUTPUT);
   pinMode(Ind31_25m, OUTPUT);
   pinMode(Ind62_5m, OUTPUT);
   pinMode(Ind125m, OUTPUT);
@@ -87,6 +92,7 @@ void setup() {
   pinMode(Ind2, OUTPUT);
   pinMode(Ind4, OUTPUT);
   pinMode(Ind8, OUTPUT);
+  pinMode(Ind16, OUTPUT);
   
   // Initialize I2C as slave
   Wire.begin(SLAVE_ADDRESS);
@@ -262,49 +268,49 @@ void set_c(int cToSet) {
   
   capRemaining = cToSet;
   
-  if (capRemaining >= 18800) {
-    digitalWrite(Cap18800, HIGH);
-    capRemaining -= 18800;
+  if (capRemaining >= 16400) {
+    digitalWrite(Cap16400, HIGH);
+    capRemaining -= 16400;
   }
   
-  if (capRemaining >= 9400) {
-    digitalWrite(Cap9400, HIGH);
-    capRemaining -= 9400;
+  if (capRemaining >= 8200) {
+    digitalWrite(Cap8200, HIGH);
+    capRemaining -= 8200;
   }
   
-  if (capRemaining >= 4700) {
-    digitalWrite(Cap4700, HIGH);
-    capRemaining -= 4700;
+  if (capRemaining >= 4100) {
+    digitalWrite(Cap4100, HIGH);
+    capRemaining -= 4100;
   }
   
-  if (capRemaining >= 2200) {
-    digitalWrite(Cap2200, HIGH);
-    capRemaining -= 2200;
+  if (capRemaining >= 2040) {
+    digitalWrite(Cap2040, HIGH);
+    capRemaining -= 2040;
   }
   
   if (capRemaining >= 1000) {
-    digitalWrite(Cap1000, HIGH);
+    digitalWrite(Cap1020, HIGH);
     capRemaining -= 1000;
   }
   
-  if (capRemaining >= 680) {
-    digitalWrite(Cap680, HIGH);
-    capRemaining -= 680;
+  if (capRemaining >= 510) {
+    digitalWrite(Cap510, HIGH);
+    capRemaining -= 510;
   }
   
-  if (capRemaining >= 330) {
-    digitalWrite(Cap330, HIGH);
-    capRemaining -= 330;
+  if (capRemaining >= 256) {
+    digitalWrite(Cap256, HIGH);
+    capRemaining -= 256;
   }
   
-  if (capRemaining >= 120) {
-    digitalWrite(Cap120, HIGH);
-    capRemaining -= 120;
+  if (capRemaining >= 127) {
+    digitalWrite(Cap127, HIGH);
+    capRemaining -= 127;
   }
   
-  if (capRemaining >= 68) {
-    digitalWrite(Cap68, HIGH);
-    capRemaining -= 68;
+  if (capRemaining >= 62) {
+    digitalWrite(Cap62, HIGH);
+    capRemaining -= 62;
   }
   
   if (capRemaining >= 33) {
@@ -312,9 +318,14 @@ void set_c(int cToSet) {
     capRemaining -= 33;
   }
   
-  if (capRemaining >= 15) {
-    digitalWrite(Cap15, HIGH);
-    capRemaining -= 15;
+  if (capRemaining >= 16) {
+    digitalWrite(Cap16, HIGH);
+    capRemaining -= 16;
+  }
+  
+  if (capRemaining >= 8) {
+    digitalWrite(Cap8_2, HIGH);
+    capRemaining -= 8;
   }
   
    // Report remaining capacitance if an exact match was not made
