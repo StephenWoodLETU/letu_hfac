@@ -9,8 +9,9 @@ ATTENDED_TEST = True
 # If true, the Arduino coupler interface will not be used
 COMPETITOR_TUNER = True
 
-# Used only for the tests not directly testing power
-DEFAULT_POWER = .2
+# Set how to communicate with the load Arduino.
+# Options are: usb, fake, or i2c
+LOAD_IFACE = 'fake'
 
 # Com port/baud rate pairs for the input/output devices
 #! Change these for RasPi
