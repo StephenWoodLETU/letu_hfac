@@ -11,6 +11,9 @@
 // I2C Libraries:
 #include "Wire.h"
 
+// Set true to use I2C communication. False to use USB serial
+boolean const usingI2c = false;
+
 // Pin Assignments:
 int const Res2_5  = 49;
 int const Res5    = 50; 
@@ -52,6 +55,7 @@ int const Ind16     = 44;
 #define SET_IND_COMMAND  "SETL"
 #define SET_CAP_COMMAND  "SETC"
 #define CMD_LENGTH       4
+#define VAL_LENGTH       10
 
 // Define the slave address of the Arduino (Any number is fine... We'll use 16)
 #define SLAVE_ADDRESS 0x10
@@ -74,8 +78,8 @@ void setup() {
   pinMode(Cap8_2, OUTPUT);
   pinMode(Cap16, OUTPUT);
   pinMode(Cap33, OUTPUT);
-  pinMode(Cap6215, OUTPUT);
-  pinMode(Cap12762, OUTPUT);
+  pinMode(Cap62, OUTPUT);
+  pinMode(Cap127, OUTPUT);
   pinMode(Cap256, OUTPUT);
   pinMode(Cap510, OUTPUT);
   pinMode(Cap1020, OUTPUT);
@@ -94,44 +98,82 @@ void setup() {
   pinMode(Ind8, OUTPUT);
   pinMode(Ind16, OUTPUT);
   
-  // Initialize I2C as slave
-  Wire.begin(SLAVE_ADDRESS);
+  if (usingI2c) {
+    // Initialize I2C as slave
+    Wire.begin(SLAVE_ADDRESS);
   
-  // Define callbacks for I2C communication
-  Wire.onReceive(receiveData);
-  Wire.onRequest(sendData);
-}
+    // Define callbacks for I2C communication
+    Wire.onReceive(receiveData);
+    Wire.onRequest(sendData);
+  } // end if using I2C
+  else {
+    Serial.begin(9600);
+  } // end if using USB
+  
+} // end setup
 
 void loop() {
+  int rToSet;
+  int lToSet;
+  int cToSet;
   
+  if(!usingI2c) {
+    while(Serial.available() > 0) {
+      rToSet = Serial.parseInt();
+      lToSet = Serial.parseInt();
+      cToSet = Serial.parseInt();
+      
+      if (Serial.read() == ';') {
+        set_r(rToSet);
+        set_l(lToSet);
+        set_c(cToSet);
+      } // close if end of transmission
+    } // close serial read loop
+  } // close USB communciation procedure if
 }
 
 // callback for received data
 void receiveData(int byteCount) 
 {
   // The command tupple contains both the operation to be taken and the value (operand) to set
-  String commandTupple = "";
-  String commandValue = "";
-  String commandOperation = "";
+  char commandTupple[CMD_LENGTH + VAL_LENGTH];
+  char commandValue[CMD_LENGTH];
+  char commandOperation[VAL_LENGTH];
   
-  while(Wire.available())
-  { 
-     commandTupple = commandTupple + (char)Wire.read();
+  int bytesAvailable = Wire.available();
+  
+  // Commands not meant for this Arduino:
+  if (bytesAvailable < CMD_LENGTH)
+    return;
+ 
+  for(int i = 0; i < CMD_LENGTH; i++) {
+    commandOperation[i] = (char)Wire.read();
   }
   
-  // Inclusive starting index, Optional exclusive ending index
-  commandOperation = commandTupple.substring(0, CMD_LENGTH + 1)
-  commandValue = commandTupple.substring(CMD_LENGTH + 1);
-  
-  if ( commandOperation.equals(SET_RES_COMMAND) ) {
+  if ( strncmp(commandOperation,SET_RES_COMMAND, CMD_LENGTH) == 0 ) {
+    int i = 0;
+    while(Wire.available()) {
+      commandValue[i++] = (char)Wire.read();
+    }
+    
     set_r( atoi(commandValue) );
   }
   
-  if ( commandOperation.equals(SET_IND_COMMAND) ) {
+  if ( strncmp(commandOperation,SET_IND_COMMAND, CMD_LENGTH) == 0 ) {
+    int i = 0;
+    while(Wire.available()) {
+      commandValue[i++] = (char)Wire.read();
+    }
+    
     set_l( atoi(commandValue) );
   }
   
-  if ( commandOperation.equals(SET_CAP_COMMAND) ) {
+  if ( strncmp(commandOperation,SET_CAP_COMMAND, CMD_LENGTH) == 0 ) {
+    int i = 0;
+    while(Wire.available()) {
+      commandValue[i++] = (char)Wire.read();
+    }
+    
     set_c( atoi(commandValue) );
   }
 }
@@ -266,7 +308,7 @@ void set_l(int lToSet) {
  */
 void set_c(int cToSet) {
   
-  capRemaining = cToSet;
+  int capRemaining = cToSet;
   
   if (capRemaining >= 16400) {
     digitalWrite(Cap16400, HIGH);
@@ -332,4 +374,3 @@ void set_c(int cToSet) {
   response = capRemaining;
   
 } // end SetC
-
