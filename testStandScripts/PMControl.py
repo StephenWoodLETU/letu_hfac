@@ -1,8 +1,10 @@
 # This controls the PowerMasterII for detecting VSWR
+import serial
+import time
 import crcmod.predefined
 
 class PMControl:
-    def __init__(self, device):
+    def __init__(self, device, crcType):
         """Open a device (linux file) to communicate with to control
         the PowerMaster (PM)"""
         try:
@@ -13,11 +15,11 @@ class PMControl:
             print("Could not open ", device)
             raise
         
-        calc_checksum = crcmod.predefined.mkCrcFun('crc-8')
-            
+        self.calc_checksum = crcmod.predefined.mkCrcFun(crcType)
+        
     # def __del__(self):
     
-    def _sendCommand(self, command) :
+    def sendCommand(self, command) :
         """Send a specific command to the device.  You must put the command,
         into binary strings exactly how you want it sent sent."""
         
@@ -34,7 +36,10 @@ class PMControl:
         # Finalize the message with a carriage return
         line = line + chr(0x0D)
         
+        print('Command: ', line)
+
         self.comlink.write(line)
+        print('Recieved: ', self.comlink.readline())
         self.comlink.flush()
         
     
@@ -42,3 +47,14 @@ class PMControl:
         # get the VSWR from the PM
         
         return 1
+
+if __name__ == '__main__':
+    print("Testing the PM control interface")
+    
+    for i in range(0,7) :
+        crcType = raw_input("Enter the CRC: ")
+        com = PMControl(('/dev/ttyUSB0', 38400), crcType)
+
+        print("Tring to set display intensity to 0")
+        com.sendCommand('I2')
+        print("Done")
