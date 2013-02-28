@@ -1,10 +1,10 @@
 # This controls the PowerMasterII for detecting VSWR
 import serial
 import time
-import crcmod.predefined
+from customCrc import *
 
 class PMControl:
-    def __init__(self, device, crcType):
+    def __init__(self, device):
         """Open a device (linux file) to communicate with to control
         the PowerMaster (PM)"""
         try:
@@ -15,7 +15,6 @@ class PMControl:
             print("Could not open ", device)
             raise
         
-        self.calc_checksum = crcmod.predefined.mkCrcFun(crcType)
         
     # def __del__(self):
     
@@ -32,14 +31,18 @@ class PMControl:
         # Add the ETX after the payload
         line = line + chr(0x03)
         # Add the checksum
-        line = line + hex(self.calc_checksum(command))
+	#line = line + chr(0x93)
+	#self.crc.update(command)
+	#line = line + hex(self.crc.crcValue)
+        line = line + calcCrc(command)
+
         # Finalize the message with a carriage return
         line = line + chr(0x0D)
         
-        print('Command: ', line)
+        print('Command: ' + " $".join("{0:x}".format(ord(c)) for c in line))
 
         self.comlink.write(line)
-        print('Recieved: ', self.comlink.readline())
+        print('Recieved: ' + self.comlink.readline())
         self.comlink.flush()
         
     
@@ -51,10 +54,8 @@ class PMControl:
 if __name__ == '__main__':
     print("Testing the PM control interface")
     
-    for i in range(0,7) :
-        crcType = raw_input("Enter the CRC: ")
-        com = PMControl(('/dev/ttyUSB0', 38400), crcType)
+    com = PMControl(('/dev/ttyUSB0', 38400))
 
-        print("Tring to set display intensity to 0")
-        com.sendCommand('I2')
-        print("Done")
+    userCommand = raw_input("Command to send: ")
+    com.sendCommand(userCommand)
+    print("Done")
