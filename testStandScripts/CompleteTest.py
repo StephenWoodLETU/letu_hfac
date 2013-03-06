@@ -5,10 +5,12 @@
 from I2cLoadControl import I2cLoadControl
 from USBLoadControl import USBLoadControl
 from FakeLoadControl import FakeLoadControl
+from PMControl import *
 import datetime
 import Config
 import csv
 import sys
+from time import time 
 
 def runTest() :
     #icomControl = IcomControl(config.ICOM_DEVICE)
@@ -18,7 +20,10 @@ def runTest() :
         loadControl = I2cLoadControl()
     else :
         loadControl = FakeLoadControl()
-        
+    
+    # Create the PM controller
+    pmControl = PMControl(Config.PM_DEVICE)
+    
     # Prepare the csv output file
     timeNow = datetime.datetime.now();
     filename = 'output/testResults' + timeNow.isoformat('_').replace(':', '.') + '.csv'
@@ -67,11 +72,16 @@ def runTest() :
                 if Config.COMPETITOR_TUNER :
                     # Tell the icom to tune
                     if attendedTest : print('Telling the Icom to start tuning.')
+                    tuneStart = time()
                     # Call wait for VSWR function
+                    tuneTime = time() - tuneStart
+
                 else :
                     # Tell the HFAC arduino to tune
                     if attendedTest : print('Telling the HFAC Arduino to start tuning.')
+                    tuneStart = time()
                     # Wait for signal back
+                    tuneTime = time() - tuneStart
                     
                 if attendedTest : print('Recording the test results.')
                 csvResults.writerow([rlcCombo, freq, power])

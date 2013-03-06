@@ -18,6 +18,7 @@ LOAD_IFACE = 'fake'
 LOAD_DEVICE = ("com7", 19200)
 ICOM_DEVICE = ("com3", 19200)
 FREQ_DEVICE = ("com3", 19200)
+PM_DEVICE = ('/dev/ttyUSB0', 38400)
 
 #output files
 TestOutputFile = "TestResults.csv"

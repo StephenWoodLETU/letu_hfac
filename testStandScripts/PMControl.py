@@ -39,23 +39,44 @@ class PMControl:
         # Finalize the message with a carriage return
         line = line + chr(0x0D)
         
-        print('Command: ' + " $".join("{0:x}".format(ord(c)) for c in line))
+        # Print out the message in Hex format:
+        # print('Command: ' + " $".join("{0:x}".format(ord(c)) for c in line))
 
         self.comlink.write(line)
-        print('Recieved: ' + self.comlink.readline())
+        #print('Recieved: ' + self.comlink.readline())
         self.comlink.flush()
         
     
     def getVSWR(self):
         # get the VSWR from the PM
+        self.sendCommand('D5')
         
-        return 1
+        # Eat up the superfulous responses...
+        response = self.comlink.readline()
+        while response[1] != 'D' :
+            response = self.comlink.readline()
+        splitResponse = response.split(',')
+        vswr = splitResponse[3]
+        self.comlink.flushInput()
+        return vswr
+
+    def getResponse(self):
+        response = self.comlink.readline()
+        self.comlink.flush()
+        return response
+
+
 
 if __name__ == '__main__':
-    print("Testing the PM control interface")
-    
-    com = PMControl(('/dev/ttyUSB0', 38400))
+    keepGoing = 'y'
+    while keepGoing == 'y':
+        print("Testing the PM control interface")
+        
+        com = PMControl(('/dev/ttyUSB0', 38400))
 
-    userCommand = raw_input("Command to send: ")
-    com.sendCommand(userCommand)
-    print("Done")
+        #userCommand = raw_input("Command to send: ")
+        #com.sendCommand(userCommand)
+        #response = com.getResponse()
+        #print response
+	print com.getVSWR()
+        keepGoing = raw_input("Keep going? [y/n]: ")
