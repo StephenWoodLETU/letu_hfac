@@ -75,5 +75,5 @@ if __name__ == '__main__':
         #com.sendCommand(userCommand)
         #response = com.getResponse()
         #print response
-	    print com.getVSWR()
+        print (com.getVSWR())
         keepGoing = raw_input("Keep going? [y/n]: ")

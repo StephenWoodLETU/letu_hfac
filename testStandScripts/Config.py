@@ -28,13 +28,6 @@ VAR_LOAD_COMBOS = "input/loadCombinations.csv"
 VLC_HEADER_ROWS = 1
 POWER_AND_FREQ = "input/powers.csv"
 
-#PowerTest data
-TABLE_J = "input/table_j.csv"
-J_HEADER_ROWS = 3
-J_FREQ_COL = 0
-J_LOADS_PER_VSR = 6
-J_VSRS = 5
-J_R_COL = 2
-J_L_COL = 3
-J_C_COL = 4
+# Requirements
+MAX_TUNE_TIME = 5
 
