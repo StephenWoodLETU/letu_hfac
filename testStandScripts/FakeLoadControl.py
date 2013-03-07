@@ -6,7 +6,7 @@ class FakeLoadControl(LoadControl):
     
     def setRLC(self, r, l, c):
         """Set the RLC of the variable load"""
-        print("FAKE_LOAD: Set RLC:", r, l, c)
+        print("FAKE_LOAD: Set RLC: {0} {1} {2}".format(r, l, c))
         return
         
     def reset(self):

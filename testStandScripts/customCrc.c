@@ -56,7 +56,7 @@ static PyObject *customCrc_calc(PyObject *self, PyObject *args)
     strcpy(command, temp);
     crc = CRC8Fast(command,command + strlen(command) - 1);
     sprintf(crcStr, "%02X", crc);
-    printf("CRC calculated: %s\n", crcStr);
+    //printf("CRC calculated: %s\n", crcStr);
     return Py_BuildValue("s", crcStr);
 }
 

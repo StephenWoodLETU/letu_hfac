@@ -1,11 +1,11 @@
 # A test case that will test the VSWR and time to tune for
 # each load combination, power, and frequency
 
-#from IcomControl import IcomControl
+from IcomControl import *
 from I2cLoadControl import I2cLoadControl
 from USBLoadControl import USBLoadControl
 from FakeLoadControl import FakeLoadControl
-#from PMControl import *
+from PMControl import *
 import datetime
 import Config
 import csv
@@ -23,7 +23,7 @@ def runTest() :
     
     # Create the PM  and icom controller
     pmControl = PMControl(Config.PM_DEVICE)
-    icomControl = IcomControl(config.ICOM_DEVICE)
+    icomControl = IcomControl(Config.ICOM_DEVICE)
     
     # Prepare the csv output file
     timeNow = datetime.datetime.now();
@@ -56,22 +56,24 @@ def runTest() :
     except:
         print("Could not load the frequency and power values to test from file %s!" % Config.POWER_AND_FREQ)
         return False
-        
+    
+    
     for power in powersToTest :
         # tell icom to set power
-        if attendedTest : print('Telling the Icom to set power: ', power)
-        icomControl.setFrequency(power)
-        
+        if attendedTest : print('Telling the Icom to set power: '+ str(power))
+        #icomControl.resetTuner()
+        icomControl.setPower(int(power))
+
         for rlcCombo in varLoadCombos :
             # Tell Arduino to set load
-            if attendedTest : print('Telling the load Arduino to set load: ', rlcCombo)
-            loadControl.setRLC(rlcCombo[0], rlcCombo[1], rlcCombo[2])
-            frequency = rlcCombo[3]
+            if attendedTest : print('Telling the load Arduino to set load: {0} {1} {2}'.format(rlcCombo[0], rlcCombo[1], rlcCombo[2]))
+            loadControl.setRLC(int(rlcCombo[0]), int(rlcCombo[1]), int(rlcCombo[2]))
+            frequency = int(rlcCombo[3])
         
             # tell icom to set frequency
-            if attendedTest : print('Telling the Icom to set frequency: ', frequency)
+            if attendedTest : print('Telling the Icom to set frequency: ' + str(frequency))
             icomControl.setFrequency(frequency)
-            
+
             if Config.COMPETITOR_TUNER :
                 # Tell the icom to tune
                 if attendedTest : print('Setting Icom to Tx.')
@@ -88,12 +90,15 @@ def runTest() :
                 tuneTime = time() - timerStart
             
             vswr = pmControl.getVSWR()
+            # stop transmitting power
+            icomControl.setRx()
+
             if tuneTime > Config.MAX_TUNE_TIME :
                 timeTest = 'fail'
             else :
                 timeTest = 'pass'
             
-            if vswr > Config.MAX_VSWR :
+            if float(vswr) > Config.MAX_VSWR :
                 vswrTest = 'fail'
             else :
                 vswrTest = 'pass'
@@ -103,9 +108,9 @@ def runTest() :
             
             if attendedTest : 
                 print('Test results: ')
-                print('RLC\tFrequency\tPower\tTime Test Result\tTime To Tune\tVSWR Test Result\tMeasured VSWR')
-                print('{} {} {}\t{}\t{}\t{}\t{}\t{}\t{}'.format(rlcCombo[0], rlcCombo[1], rlcCombo[2], frequency, power, timeTest, tuneTime, vswrTest, vswr))
-                userResponse = input('Continue testing? [y/n]: ')
+                print('{0:15s} {1:10s} {2:6s} {3:10s} {4:10s} {5:8s} {6:7s}'.format('RLC', 'Frequency', 'Power', 'Time Test', 'Time', 'VSWR Test', 'Measured VSWR'))
+                print('{0:4s} {1:4s} {2:4s} {3:10d} {4:6s} {5:10s} {6:10f} {7:8s} {8:7s}'.format(rlcCombo[0], rlcCombo[1], rlcCombo[2], frequency, power, timeTest, tuneTime, vswrTest, vswr))
+                userResponse = raw_input('Continue testing? [y/n]: ')
                 while True :
                     if userResponse == 'y' :
                         break
@@ -118,9 +123,10 @@ def runTest() :
 def waitForVSWR(pmControl) :
     vswr = 100
     
-    while vswr > 3 and vswr != 0:
+    while (float(vswr) > Config.MAX_VSWR) :
         vswr = pmControl.getVSWR()
-
+        print 'vswr {0}'.format(vswr)
+    return
     
 if __name__ == '__main__':
     runTest()

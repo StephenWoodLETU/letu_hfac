@@ -2,6 +2,7 @@
 
 import time
 import serial
+import Config
 
 # Local configuration variables
 DEFAULT_FREQUENCY = 1995000
@@ -68,13 +69,13 @@ class IcomControl:
                      self._readResponse(2)
                      
                      # Initialize to default settings
-                     # LSB, Tx, RF power setting 20 of 255 - 1.995 MHz
+                     # LSB, Rx, RF power setting 20 of 255 - 1.995 MHz
                      
                      # Set RTTY
                      self._sendCommand(chr(0x01), chr(0x04))
                      
-                     # Set to Tx
-                     self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
+                     # Set to Rx
+                     self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
                      
                      # Set RF power setting to 20
                      self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(DEFAULT_POWER, 1))
@@ -88,14 +89,14 @@ class IcomControl:
 
         # def __del__(self):
         
-        def resetTuner(self):		
-			   #set back down to normal?
-               self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(2, 1))
-               #set back to Rx?
-               self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
-			   #set to default frequency
-               self.setFrequency(DEFAULT_FREQUENCY)
-               self.comlink.close()
+        def resetTuner(self):
+            # set power to default
+            self._sendCommand(chr(0x14), chr(0x0A), _Int_To_BCD(DEFAULT_POWER, 1))
+            # set back to Rx
+            self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
+            # set to default frequency
+            self.setFrequency(DEFAULT_FREQUENCY)
+            self.comlink.close()
 
         def _sendCommand(self, command, subcommand=b'', data=b''):
                """Send a specific command to the device.  You must put the command,
@@ -157,7 +158,7 @@ class IcomControl:
                "Signals for the other device to tune"
                #set Rx
                self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
-               #sent tune
+               #start tuning
                self._sendCommand(chr(0x1C), chr(0x01), chr(0x02))
                time.sleep(.2)
                #set Tx
@@ -166,11 +167,11 @@ class IcomControl:
 # Main method to test the Frequency Controller.
 if __name__ == '__main__':
         print("Testing FrequencyControl!")
-        f = raw_input("Enter the device descriptor [com3]: ")
-        b = int(raw_input("Enter the baud rate [19200]: "))
+        #f = raw_input("Enter the device descriptor [com3]: ")
+        #b = int(raw_input("Enter the baud rate [19200]: "))
         
         print("Creating frequency controller")
-        cont = FrequencyControl((f, b))
+        cont = IcomControl(Config.ICOM_DEVICE)
         
         print("Reading then setting frequency.")
         print 'Read the frequency: {}'.format(cont.readFrequency())

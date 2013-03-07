@@ -6,6 +6,7 @@
 from LoadControl import LoadControl
 import time
 import serial 
+import Config
 
 class USBLoadControl(LoadControl):
         
@@ -36,13 +37,11 @@ class USBLoadControl(LoadControl):
 
 if __name__ == '__main__':
         print("Testing LoadControl!")
-        f = raw_input("Enter the device descriptor: ")
-        b = int(raw_input("Enter the baud rate: "))
-        load = LoadControl((f,b))
+        load = USBLoadControl(Config.LOAD_DEVICE)
         R = int(raw_input("Enter a resistance: "))
         L = int(raw_input("Enter a inductance: "))
         C = int(raw_input("Enter a capacatence: "))
-        load.setLCR(R,L,C)
+        load.setRLC(int(R),int(L),int(C))
         time.sleep(5)
         load.reset()
 

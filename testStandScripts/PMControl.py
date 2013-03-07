@@ -2,6 +2,7 @@
 import serial
 import time
 from customCrc import *
+import Config
 
 class PMControl:
     def __init__(self, device):
@@ -69,7 +70,7 @@ if __name__ == '__main__':
     while keepGoing == 'y':
         print("Testing the PM control interface")
         
-        com = PMControl(('/dev/ttyUSB0', 38400))
+        com = PMControl(Config.PM_DEVICE)
 
         #userCommand = raw_input("Command to send: ")
         #com.sendCommand(userCommand)

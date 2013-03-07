@@ -15,10 +15,9 @@ LOAD_IFACE = 'fake'
 
 # Com port/baud rate pairs for the input/output devices
 #! Change these for RasPi
-LOAD_DEVICE = ("com7", 19200)
-ICOM_DEVICE = ("com3", 19200)
-FREQ_DEVICE = ("com3", 19200)
-PM_DEVICE = ('/dev/ttyUSB0', 38400)
+LOAD_DEVICE = ("/dev/ttyACM0", 19200)
+ICOM_DEVICE = ("/dev/ttyUSB0", 19200)
+PM_DEVICE   = ('/dev/ttyUSB1', 38400)
 
 #output files
 TestOutputFile = "TestResults.csv"
@@ -30,4 +29,4 @@ POWER_AND_FREQ = "input/powers.csv"
 
 # Requirements
 MAX_TUNE_TIME = 5
-
+MAX_VSWR = 2.0
