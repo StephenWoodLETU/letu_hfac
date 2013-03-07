@@ -57,24 +57,25 @@ def runTest() :
         print("Could not load the frequency and power values to test from file %s!" % Config.POWER_AND_FREQ)
         return False
         
-    for rlcCombo in varLoadCombos :
-        # Tell Arduino to set load
-        if attendedTest : print('Telling the load Arduino to set load: ', rlcCombo)
-        loadControl.setRLC(rlcCombo[0], rlcCombo[1], rlcCombo[2])
-        frequency = rlcCombo[3]
+    for power in powersToTest :
+        # tell icom to set power
+        if attendedTest : print('Telling the Icom to set power: ', power)
+        icomControl.setFrequency(power)
         
-        # tell icom to set frequency
-        if attendedTest : print('Telling the Icom to set frequency: ', frequency)
-        icomControl.setFrequency(frequency)
+        for rlcCombo in varLoadCombos :
+            # Tell Arduino to set load
+            if attendedTest : print('Telling the load Arduino to set load: ', rlcCombo)
+            loadControl.setRLC(rlcCombo[0], rlcCombo[1], rlcCombo[2])
+            frequency = rlcCombo[3]
         
-        for power in powersToTest :
-            # tell icom to set power
-            if attendedTest : print('Telling the Icom to set power: ', power)
-            icomControl.setFrequency(power)
+            # tell icom to set frequency
+            if attendedTest : print('Telling the Icom to set frequency: ', frequency)
+            icomControl.setFrequency(frequency)
             
             if Config.COMPETITOR_TUNER :
                 # Tell the icom to tune
-                if attendedTest : print('Telling the Icom to start tuning.')
+                if attendedTest : print('Setting Icom to Tx.')
+                icomControl.setTx()
                 timerStart = time()
                 waitForVSWR(pmControl)
                 tuneTime = time() - timerStart
@@ -87,13 +88,12 @@ def runTest() :
                 tuneTime = time() - timerStart
             
             vswr = pmControl.getVSWR()
-            vswr = 1.1
             if tuneTime > Config.MAX_TUNE_TIME :
                 timeTest = 'fail'
             else :
                 timeTest = 'pass'
             
-            if vswr > 1.6 :
+            if vswr > Config.MAX_VSWR :
                 vswrTest = 'fail'
             else :
                 vswrTest = 'pass'
@@ -118,7 +118,7 @@ def runTest() :
 def waitForVSWR(pmControl) :
     vswr = 100
     
-    while vswr > 3 :
+    while vswr > 3 and vswr != 0:
         vswr = pmControl.getVSWR()
 
     
