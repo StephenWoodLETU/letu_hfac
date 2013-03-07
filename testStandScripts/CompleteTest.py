@@ -15,7 +15,7 @@ from time import time
 def runTest() :
     
     if Config.LOAD_IFACE == 'usb' :
-        loadControl = USBLoadControl()
+        loadControl = USBLoadControl(Config.LOAD_DEVICE)
     elif Config.LOAD_IFACE == 'i2c' :
         loadControl = I2cLoadControl()
     else :
@@ -123,9 +123,12 @@ def runTest() :
 def waitForVSWR(pmControl) :
     vswr = 100
     
-    while (float(vswr) > Config.MAX_VSWR) :
+    timeoutStart = time()
+    while (float(vswr) > Config.MAX_VSWR or float(vswr) == 0) :
         vswr = pmControl.getVSWR()
-        print 'vswr {0}'.format(vswr)
+        if (time() - timeoutStart) > 10 :
+            print time() - timoutStart
+            break
     return
     
 if __name__ == '__main__':

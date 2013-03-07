@@ -11,13 +11,13 @@ COMPETITOR_TUNER = True
 
 # Set how to communicate with the load Arduino.
 # Options are: usb, fake, or i2c
-LOAD_IFACE = 'fake'
+LOAD_IFACE = 'usb'
 
 # Com port/baud rate pairs for the input/output devices
 #! Change these for RasPi
 LOAD_DEVICE = ("/dev/ttyACM0", 19200)
-ICOM_DEVICE = ("/dev/ttyUSB0", 19200)
-PM_DEVICE   = ('/dev/ttyUSB1', 38400)
+ICOM_DEVICE = ("/dev/ttyUSB1", 19200)
+PM_DEVICE   = ('/dev/ttyUSB0', 38400)
 
 #output files
 TestOutputFile = "TestResults.csv"
