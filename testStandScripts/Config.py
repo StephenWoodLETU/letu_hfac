@@ -26,7 +26,7 @@ TestOutputFile = "TestResults.csv"
 # Input files settings
 VAR_LOAD_COMBOS = "input/loadCombinations.csv"
 VLC_HEADER_ROWS = 1
-POWER_AND_FREQ = "input/frequenciesAndPowers.csv"
+POWER_AND_FREQ = "input/powers.csv"
 
 #PowerTest data
 TABLE_J = "input/table_j.csv"

@@ -50,7 +50,7 @@ def runTest() :
     # Read in the powers (in Watts) and frequencies (in Hz) to tune at
     try:
         inFile = open(Config.POWER_AND_FREQ, 'r')
-        powersToTest, freqsToTest = [line for line in csv.reader(inFile)]
+        powersToTest = [line for line in csv.reader(inFile)]
         inFile.close()
     except:
         print("Could not load the frequency and power values to test from file %s!" % Config.POWER_AND_FREQ)
@@ -61,30 +61,29 @@ def runTest() :
         if attendedTest : print('Telling the load Arduino to set load: ', rlcCombo)
         loadControl.setRLC(rlcCombo[0], rlcCombo[1], rlcCombo[2])
         
-        for freq in freqsToTest :
-            # tell icom to set frequency
-            if attendedTest : print('Telling the Icom to set frequency: ', freq)
-            
-            for power in powersToTest :
-                # tell icom to set power
-                if attendedTest : print('Telling the Icom to set power: ', power)
-                
-                if Config.COMPETITOR_TUNER :
-                    # Tell the icom to tune
-                    if attendedTest : print('Telling the Icom to start tuning.')
-                    tuneStart = time()
-                    # Call wait for VSWR function
-                    tuneTime = time() - tuneStart
+		# tell icom to set frequency
+		if attendedTest : print('Telling the Icom to set frequency: ', rlcCombo[3])
+		
+		for power in powersToTest :
+			# tell icom to set power
+			if attendedTest : print('Telling the Icom to set power: ', power)
+			
+			if Config.COMPETITOR_TUNER :
+				# Tell the icom to tune
+				if attendedTest : print('Telling the Icom to start tuning.')
+				tuneStart = time()
+				# Call wait for VSWR function
+				tuneTime = time() - tuneStart
 
-                else :
-                    # Tell the HFAC arduino to tune
-                    if attendedTest : print('Telling the HFAC Arduino to start tuning.')
-                    tuneStart = time()
-                    # Wait for signal back
-                    tuneTime = time() - tuneStart
-                    
-                if attendedTest : print('Recording the test results.')
-                csvResults.writerow([rlcCombo, freq, power])
+			else :
+				# Tell the HFAC arduino to tune
+				if attendedTest : print('Telling the HFAC Arduino to start tuning.')
+				tuneStart = time()
+				# Wait for signal back
+				tuneTime = time() - tuneStart
+				
+			if attendedTest : print('Recording the test results.')
+			csvResults.writerow([rlcCombo, freq, power])
     return True
 
 if __name__ == '__main__':
