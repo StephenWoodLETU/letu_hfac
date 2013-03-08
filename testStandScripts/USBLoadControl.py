@@ -29,6 +29,7 @@ class USBLoadControl(LoadControl):
                command = b"{0} {1} {2};".format(r,l,c)
                self.comlink.write(command)
                self.comlink.flush()
+               self.comlink.flushInput()
 
         def reset(self):
                # Format is <char>

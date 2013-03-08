@@ -43,7 +43,6 @@ class PMControl:
         self.comlink.write(line)
         #print('Recieved: ' + self.comlink.readline())
         self.comlink.flush()
-        
     
     def getVSWR(self):
         # get the VSWR from the PM

@@ -10,7 +10,8 @@ import datetime
 import Config
 import csv
 import sys
-from time import time 
+from time import time
+import time
 
 def runTest() :
     
@@ -61,13 +62,13 @@ def runTest() :
     for power in powersToTest :
         # tell icom to set power
         if attendedTest : print('Telling the Icom to set power: '+ str(power))
-        #icomControl.resetTuner()
         icomControl.setPower(int(power))
 
         for rlcCombo in varLoadCombos :
             # Tell Arduino to set load
             if attendedTest : print('Telling the load Arduino to set load: {0} {1} {2}'.format(rlcCombo[0], rlcCombo[1], rlcCombo[2]))
             loadControl.setRLC(int(rlcCombo[0]), int(rlcCombo[1]), int(rlcCombo[2]))
+            time.sleep(2)
             frequency = int(rlcCombo[3])
         
             # tell icom to set frequency
@@ -78,16 +79,17 @@ def runTest() :
                 # Tell the icom to tune
                 if attendedTest : print('Setting Icom to Tx.')
                 icomControl.setTx()
-                timerStart = time()
+                icomControl.startTune()
+                timerStart = time.time()
                 waitForVSWR(pmControl)
-                tuneTime = time() - timerStart
+                tuneTime = time.time() - timerStart
 
             else :
                 # Tell the HFAC arduino to tune
                 if attendedTest : print('Telling the HFAC Arduino to start tuning.')
-                timerStart = time()
+                timerStart = time.time()
                 # Wait for signal back
-                tuneTime = time() - timerStart
+                tuneTime = time.time() - timerStart
             
             vswr = pmControl.getVSWR()
             # stop transmitting power
@@ -98,7 +100,7 @@ def runTest() :
             else :
                 timeTest = 'pass'
             
-            if float(vswr) > Config.MAX_VSWR :
+            if (float(vswr) > Config.MAX_VSWR) or float(vswr) < 1:
                 vswrTest = 'fail'
             else :
                 vswrTest = 'pass'
@@ -122,13 +124,13 @@ def runTest() :
 
 def waitForVSWR(pmControl) :
     vswr = 100
-    
-    timeoutStart = time()
-    while (float(vswr) > Config.MAX_VSWR or float(vswr) == 0) :
+
+    timeoutStart = time.time()
+    while (float(vswr) > Config.MAX_VSWR or float(vswr) < 1) :
         vswr = pmControl.getVSWR()
-        print vswr
-        print (time() - timoutStart)
-        if (time() - timeoutStart) > 10 :
+        print('VSWR: ' + vswr)
+        #print((time.time() - timeoutStart))
+        if (time.time() - timeoutStart) > float(Config.MAX_TUNE_TIME) :
             break
 
     return

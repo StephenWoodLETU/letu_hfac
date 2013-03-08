@@ -15,9 +15,9 @@ LOAD_IFACE = 'usb'
 
 # Com port/baud rate pairs for the input/output devices
 #! Change these for RasPi
-PM_DEVICE   = ('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A400gmLr-if00-port0', 19200)
-LOAD_DEVICE = ('/dev/serial/by-id/usb-Arduino__www.arduino.cc__Arduino_Mega_2560_649363331373519161C1-if00', 19200)
-ICOM_DEVICE = ('/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_IC-7200_0202227-if00-port0', 38400)
+PM_DEVICE   = ('/home/pi/serial/ttyPM', '38400')
+LOAD_DEVICE = ('/home/pi/serial/ttyARD', '19200')
+ICOM_DEVICE = ('/home/pi/serial/ttyICOM', '19200')
 
 #output files
 TestOutputFile = "TestResults.csv"
@@ -29,4 +29,4 @@ POWER_AND_FREQ = "input/powers.csv"
 
 # Requirements
 MAX_TUNE_TIME = 5
-MAX_VSWR = 2.0
+MAX_VSWR = 1.6

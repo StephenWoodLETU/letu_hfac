@@ -156,13 +156,9 @@ class IcomControl:
         
         def startTune(self):
                "Signals for the other device to tune"
-               #set Rx
-               self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
                #start tuning
                self._sendCommand(chr(0x1C), chr(0x01), chr(0x02))
                time.sleep(.2)
-               #set Tx
-               self._sendCommand(chr(0x1C), chr(0x00), chr(0x01))
 
 # Main method to test the Frequency Controller.
 if __name__ == '__main__':
