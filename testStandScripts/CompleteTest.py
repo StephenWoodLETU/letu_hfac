@@ -126,9 +126,11 @@ def waitForVSWR(pmControl) :
     timeoutStart = time()
     while (float(vswr) > Config.MAX_VSWR or float(vswr) == 0) :
         vswr = pmControl.getVSWR()
+        print vswr
+        print (time() - timoutStart)
         if (time() - timeoutStart) > 10 :
-            print time() - timoutStart
             break
+
     return
     
 if __name__ == '__main__':
