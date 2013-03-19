@@ -16,7 +16,7 @@ LOAD_IFACE = 'usb'
 # Com port/baud rate pairs for the input/output devices
 #! Change these for RasPi
 PM_DEVICE   = ('/home/pi/serial/ttyPM', '38400')
-LOAD_DEVICE = ('/home/pi/serial/ttyARD', '19200')
+LOAD_DEVICE = ('/home/pi/serial/ttyARD', '9600')
 ICOM_DEVICE = ('/home/pi/serial/ttyICOM', '19200')
 
 #output files

@@ -44,6 +44,22 @@ class PMControl:
         #print('Recieved: ' + self.comlink.readline())
         self.comlink.flush()
     
+    def startRealTimeData(self):
+        # Report every 140 ms
+        self.sendCommand('D3')
+
+    def readRealTimeVswr(self):
+        response = self.comlink.readline()
+        while response[1] != 'D':
+            response = self.comlink.readline()
+        splitResponse = response.split(',')
+        vswr = splitResponse[3]
+        return vswr
+
+    def stopRealTimeData(self):
+        self.sendCommand('D0')
+        self.comlink.flushInput()
+
     def getVSWR(self):
         # get the VSWR from the PM
         self.sendCommand('D5')
@@ -75,5 +91,8 @@ if __name__ == '__main__':
         #com.sendCommand(userCommand)
         #response = com.getResponse()
         #print response
-        print (com.getVSWR())
+        com.startRealTimeData()
+        for i in range(0,10):
+            print (com.readRealTimeVswr())
+        com.stopRealTimeData()
         keepGoing = raw_input("Keep going? [y/n]: ")
