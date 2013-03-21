@@ -78,6 +78,7 @@ def runTest() :
             if Config.COMPETITOR_TUNER :
                 # Tell the icom to tune
                 if attendedTest : print('Setting Icom to Tx.')
+                raw_input("Continue? [y]")
                 icomControl.setTx()
                 icomControl.startTune()
                 timerStart = time.time()
