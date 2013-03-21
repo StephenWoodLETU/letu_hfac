@@ -67,11 +67,8 @@ def runTest() :
         for rlcCombo in varLoadCombos :
             # Tell Arduino to set load
             if attendedTest : print('Telling the load Arduino to set load: {0} {1} {2}'.format(rlcCombo[0], rlcCombo[1], rlcCombo[2]))
-            #loadControl.setRLC(int(rlcCombo[0]), int(rlcCombo[1]), int(rlcCombo[2]))
-            R = int(raw_input("R: "))
-            L = int(raw_input("L: "))
-            C = int(raw_input("C: "))
-            loadControl.setRLC(R,L,C)
+            raw_input("Continue? [y]")
+            loadControl.setRLC(int(rlcCombo[0]), int(rlcCombo[1]), int(rlcCombo[2]))
             frequency = int(rlcCombo[3])
         
             # tell icom to set frequency

@@ -29,10 +29,9 @@ class USBLoadControl(LoadControl):
                self.comlink.flush()
                self.comlink.flushInput()
                command = b"{0},{1},{2}".format(r, l, c)
-               print("Command: " + command)
                self.comlink.write(command)
                # Wait until the arduino is done setting the load
-               print self.comlink.read(4)
+               print self.comlink.readline()
 
         def reset(self):
                # 
@@ -45,7 +44,7 @@ if __name__ == '__main__':
         R = int(raw_input("Enter a resistance: "))
         L = int(raw_input("Enter a inductance: "))
         C = int(raw_input("Enter a capacatence: "))
-        load.setRLC(R, L, C)
+        load.setRLC(1000, 0, 0)
         #load.setRLC(500,0,0)
         print("Set the load now sleeping...")
         time.sleep(5)
