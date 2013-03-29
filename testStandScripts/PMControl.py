@@ -17,7 +17,8 @@ class PMControl:
             raise
         
         
-    # def __del__(self):
+    def __del__(self):
+            self.comlink.close()
     
     def sendCommand(self, command) :
         """Send a specific command to the device.  You must put the command,
@@ -70,7 +71,7 @@ class PMControl:
             response = self.comlink.readline()
         splitResponse = response.split(',')
         vswr = splitResponse[3]
-        self.comlink.flushInput()
+        self.comlink.flush()
         return vswr
 
     def getResponse(self):
