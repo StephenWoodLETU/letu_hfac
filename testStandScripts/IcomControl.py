@@ -87,7 +87,9 @@ class IcomControl:
                      print "Could not open ",device
                      raise
 
-        # def __del__(self):
+        def __del__(self):
+            self.resetTuner()
+            self.comlink.close()
         
         def resetTuner(self):
             # set power to default
@@ -96,7 +98,6 @@ class IcomControl:
             self._sendCommand(chr(0x1C), chr(0x00), chr(0x00))
             # set to default frequency
             self.setFrequency(DEFAULT_FREQUENCY)
-            self.comlink.close()
 
         def _sendCommand(self, command, subcommand=b'', data=b''):
                """Send a specific command to the device.  You must put the command,
