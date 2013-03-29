@@ -32,6 +32,7 @@ class USBLoadControl(LoadControl):
                self.comlink.write(command)
                # Wait until the arduino is done setting the load
                print self.comlink.readline()
+               self.comlink.flush()
 
         def reset(self):
                # 
