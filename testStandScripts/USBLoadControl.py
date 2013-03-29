@@ -44,9 +44,7 @@ if __name__ == '__main__':
         R = int(raw_input("Enter a resistance: "))
         L = int(raw_input("Enter a inductance: "))
         C = int(raw_input("Enter a capacatence: "))
-        load.setRLC(1000, 0, 0)
-        #load.setRLC(500,0,0)
-        print("Set the load now sleeping...")
-        time.sleep(5)
-        print("Done Sleeping.")
+        load.setRLC(R, L, C)
+        print("Done setting the load.")
+        raw_input("Ready to reset? [Enter]")
 
