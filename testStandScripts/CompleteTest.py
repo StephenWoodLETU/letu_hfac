@@ -62,23 +62,25 @@ def runTest() :
     for power in powersToTest :
         # tell icom to set power
         if attendedTest : print('Telling the Icom to set power: '+ str(power))
+        raw_input('Continue? ')
         icomControl.setPower(int(power))
 
         for rlcCombo in varLoadCombos :
             # Tell Arduino to set load
             if attendedTest : print('Telling the load Arduino to set load: {0} {1} {2}'.format(rlcCombo[0], rlcCombo[1], rlcCombo[2]))
-            raw_input("Continue? [y]")
+            raw_input("Continue? ")
             loadControl.setRLC(int(rlcCombo[0]), int(rlcCombo[1]), int(rlcCombo[2]))
             frequency = int(rlcCombo[3])
         
             # tell icom to set frequency
             if attendedTest : print('Telling the Icom to set frequency: ' + str(frequency))
+            raw_input('Continue? ')
             icomControl.setFrequency(frequency)
 
             if Config.COMPETITOR_TUNER :
                 # Tell the icom to tune
                 if attendedTest : print('Setting Icom to Tx.')
-                raw_input("Continue? [y]")
+                raw_input("Continue? ")
                 icomControl.setTx()
                 icomControl.startTune()
                 timerStart = time.time()
@@ -125,12 +127,14 @@ def runTest() :
 
 def waitForVSWR(pmControl) :
     vswr = 100
+    numOfGoodVswrs = 0
 
     timeoutStart = time.time()
-    while (float(vswr) > Config.MAX_VSWR or float(vswr) < 1) :
+    while (numOfGoodVswrs < 10) :
         vswr = pmControl.getVSWR()
         print('VSWR: ' + vswr)
-        #print((time.time() - timeoutStart))
+        if (vswr < Config.MAX_VSWR && vswr > 1)
+            numOfGoodVswrs = numOfGoodVswrs + 1
         if (time.time() - timeoutStart) > float(Config.MAX_TUNE_TIME) :
             break
 
