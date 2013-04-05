@@ -42,9 +42,13 @@ class USBLoadControl(LoadControl):
 if __name__ == '__main__':
         print("Testing LoadControl!")
         load = USBLoadControl(Config.LOAD_DEVICE)
-        R = int(raw_input("Enter a resistance: "))
-        L = int(raw_input("Enter a inductance: "))
-        C = int(raw_input("Enter a capacatence: "))
+        time.sleep(1)
+        #R = int(raw_input("Enter a resistance: "))
+        #L = int(raw_input("Enter a inductance: "))
+        #C = int(raw_input("Enter a capacatence: "))
+        R = 1000
+        L = 0
+        C = 0
         load.setRLC(R, L, C)
         print("Done setting the load.")
         raw_input("Ready to reset? [Enter]")

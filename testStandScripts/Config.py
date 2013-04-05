@@ -3,7 +3,7 @@
 import os
 
 # Set to true if this test will be attended
-ATTENDED_TEST = True
+ATTENDED_TEST = False
 
 # Set to true if using a competitor's coupler
 # If true, the Arduino coupler interface will not be used
@@ -15,7 +15,7 @@ LOAD_IFACE = 'usb'
 
 # Com port/baud rate pairs for the input/output devices
 #! Change these for RasPi
-PM_DEVICE   = ('/home/pi/serial/ttyPM', '38400')
+PM_DEVICE   = ('/home/pi/serial/ttyPM', '19200')
 LOAD_DEVICE = ('/home/pi/serial/ttyARD', '9600')
 ICOM_DEVICE = ('/home/pi/serial/ttyICOM', '19200')
 
