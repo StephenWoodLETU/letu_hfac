@@ -26,13 +26,10 @@ class USBLoadControl(LoadControl):
 
         def setRLC(self, r, l, c):
                # Format is R L C;
-               self.comlink.flush()
-               self.comlink.flushInput()
                command = b"{0},{1},{2}".format(r, l, c)
                self.comlink.write(command)
                # Wait until the arduino is done setting the load
                response = self.comlink.readline()
-               self.comlink.flush()
                return response
 
         def reset(self):

@@ -131,6 +131,7 @@ def waitForVSWR(pmControl) :
 
     timeoutStart = time.time()
     while (numOfGoodVswrs < 10) :
+        sleep(0.1)
         vswr = pmControl.getVSWR()
         #print('VSWR: ' + vswr)
         if (float(vswr) < float(Config.MAX_VSWR) and float(vswr) > 1) :
