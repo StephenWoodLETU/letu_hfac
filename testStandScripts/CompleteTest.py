@@ -75,6 +75,7 @@ def runTest() :
         
             # tell icom to set frequency
             if verbose : print('Telling the Icom to set frequency: ' + str(frequency))
+            time.sleep(1)
             icomControl.setFrequency(frequency)
 
             if Config.COMPETITOR_TUNER :
@@ -128,17 +129,18 @@ def runTest() :
 def waitForVSWR(pmControl) :
     vswr = 100
     numOfGoodVswrs = 0
+    pmControl.startRealTimeData()
 
     timeoutStart = time.time()
     while (numOfGoodVswrs < 10) :
         time.sleep(0.1)
-        vswr = pmControl.getVSWR()
+        pmControl.readRealTimeVswr()
         #print('VSWR: ' + vswr)
         if (float(vswr) < float(Config.MAX_VSWR) and float(vswr) > 1) :
             numOfGoodVswrs = numOfGoodVswrs + 1
         if (time.time() - timeoutStart) > float(Config.MAX_TUNE_TIME) :
             break
-
+    pmControl.stopRealTimeData()
     return
     
 if __name__ == '__main__':

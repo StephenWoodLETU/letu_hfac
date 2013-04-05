@@ -29,8 +29,9 @@ class USBLoadControl(LoadControl):
                command = b"{0},{1},{2}".format(r, l, c)
                self.comlink.write(command)
                # Wait until the arduino is done setting the load
-               response = self.comlink.readline()
-               return response
+               self.comlink.readline()
+               self.comlink.flush()
+               
 
         def reset(self):
                # 
