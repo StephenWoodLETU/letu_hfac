@@ -38,7 +38,7 @@ def runTest() :
 
     # Copy some values from the config file
     attendedTest = Config.ATTENDED_TEST
-    verbose = config.VERBOSE
+    verbose = Config.VERBOSE
 
 
     # Read in RLC values for the variable load to switch in
