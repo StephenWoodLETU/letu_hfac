@@ -2,8 +2,12 @@
 
 import os
 
-# Set to true if this test will be attended
+# Set to True if this test will be attended (asks user to continue)
 ATTENDED_TEST = False
+
+# Set to True if you wish to see what the script is doing
+# False will suppress all output
+VERBOSE = True
 
 # Set to true if using a competitor's coupler
 # If true, the Arduino coupler interface will not be used

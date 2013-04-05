@@ -38,6 +38,7 @@ def runTest() :
 
     # Copy some values from the config file
     attendedTest = Config.ATTENDED_TEST
+    verbose = config.VERBOSE
 
 
     # Read in RLC values for the variable load to switch in
@@ -61,24 +62,25 @@ def runTest() :
     
     for power in powersToTest :
         # tell icom to set power
-        if attendedTest : print('Telling the Icom to set power: '+ str(power))
-        raw_input('Continue? ')
+        if verbose : print('Telling the Icom to set power: '+ str(power))
+        time.sleep(1)
         icomControl.setPower(int(power))
 
         for rlcCombo in varLoadCombos :
             # Tell Arduino to set load
-            if attendedTest : print('Telling the load Arduino to set load: {0} {1} {2}'.format(rlcCombo[0], rlcCombo[1], rlcCombo[2]))
-            time.delay(1)
+            if verbose : print('Telling the load Arduino to set load: {0} {1} {2}'.format(rlcCombo[0], rlcCombo[1], rlcCombo[2]))
+            time.sleep(1)
             loadControl.setRLC(int(rlcCombo[0]), int(rlcCombo[1]), int(rlcCombo[2]))
             frequency = int(rlcCombo[3])
         
             # tell icom to set frequency
-            if attendedTest : print('Telling the Icom to set frequency: ' + str(frequency))
+            if verbose : print('Telling the Icom to set frequency: ' + str(frequency))
             icomControl.setFrequency(frequency)
 
             if Config.COMPETITOR_TUNER :
                 # Tell the icom to tune
-                if attendedTest : print('Setting Icom to Tx.')
+                if verbose : print('Setting Icom to Tx.')
+                time.sleep(1)
                 icomControl.setTx()
                 icomControl.startTune()
                 timerStart = time.time()
@@ -87,7 +89,7 @@ def runTest() :
 
             else :
                 # Tell the HFAC arduino to tune
-                if attendedTest : print('Telling the HFAC Arduino to start tuning.')
+                if verbose : print('Telling the HFAC Arduino to start tuning.')
                 timerStart = time.time()
                 # Wait for signal back
                 tuneTime = time.time() - timerStart
@@ -106,7 +108,7 @@ def runTest() :
             else :
                 vswrTest = 'pass'
                 
-            if attendedTest : print('Recording the test results.')
+            if verbose : print('Recording the test results.')
             csvResults.writerow([rlcCombo, frequency, power, timeTest, tuneTime, vswrTest, vswr])
             
             if attendedTest : 
@@ -130,7 +132,7 @@ def waitForVSWR(pmControl) :
     timeoutStart = time.time()
     while (numOfGoodVswrs < 10) :
         vswr = pmControl.getVSWR()
-        print('VSWR: ' + vswr)
+        #print('VSWR: ' + vswr)
         if (float(vswr) < float(Config.MAX_VSWR) and float(vswr) > 1) :
             numOfGoodVswrs = numOfGoodVswrs + 1
         if (time.time() - timeoutStart) > float(Config.MAX_TUNE_TIME) :
