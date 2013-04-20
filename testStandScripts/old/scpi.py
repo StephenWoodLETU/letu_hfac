@@ -23,36 +23,20 @@ class SCPI:
         self.s.send("DISP:ENABLE %d" % isOn)
 
 
-    def getMeasurements(self):
-      	self.s.send("R?\n")
-        c = self.s.recv(1)
-        if c != "#":
-	    print "*%s*"%(c,)
-            return ""
-        # read the number of digits that follow
-        l = int(self.s.recv(1))
-        length = int(self.s.recv(l))
+    def getMeasurement(self):
+        self.s.send("CALC:MARK1:Y?")
+        meas = self.s.recv(5)
+        return meas
 
-    	l = 0
-        r = ""
-        while l < int(length):
-            c = self.s.recv(int(length)-l)
-            l += len(c)
-            r += c
-
-        # read the newline character
-        self.s.recv(1)
-
-        m = struct.unpack(">%dd"%(int(length)/8,), r)
-
-        return m
 
 if __name__ == '__main__':
     print("Testing SCPI control")
 
-    ip = raw_input("Enter the IP address: ")
-    onOff = int(raw_input("Screen on or off? [0 or 1]: "))
-
+    #ip = raw_input("Enter the IP address: ")
+    #onOff = int(raw_input("Screen on or off? [0 or 1]: "))
+    ip = "10.52.88.163"
     scpi = SCPI(ip)
-    scpi.setScreen(onOff)
-
+    #scpi.setScreen(onOff)
+    meas = scpi.getMeasurement()
+    print(meas)
+    
