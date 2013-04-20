@@ -17,26 +17,30 @@ class vnaCom():
                self.comlink.close()
 
         def sendMagAndPhase(self):
-            (mag,phase) = scpi.getMagAndPhase()
+            (mag,phase) = self.scpi.getMagAndPhase()
 
             # Format is mag,phase (floats);
-            command = b"{0},{1}".format(mag, phase)
+            command = b"{0},{1}\n".format(mag, phase)
             self.comlink.write(command)
 
             self.comlink.flush()
             return (mag,phase)
 
-        def waitForRequest()
-            response = ''
+        def waitForRequest(self):
+            response = self.comlink.readline()
 
-            while response != 'GETMAGPHASE' :
+            while response.find('GETMAGPHASE') != 0 :
                 response = self.comlink.readline()
+                print response
 
 
 if __name__ == '__main__':
-    dev = raw_input("Enter the Arduino device to connect to: ")
-    baud = raw_input("Enter the baud rate of the Arduino: ")
-    ip = raw_input("Enter the VNA IP address: ")
+    dev = "/home/pi/serial/ttyARD2"
+    baud = 9600
+    print "Using device: " + dev
+    print "Using baud rate: {0}".format(baud)
+    ip = "10.52.88.137"
+    print "Using IP: " + ip
     com = vnaCom((dev,baud),ip)
 
     while True :
